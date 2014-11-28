@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <meta charset="UTF-8">
+    <style>
+        {% for stylesheet in css %}
+            {% include stylesheet %}
+        {% endfor %}
+    </style>
+</head>
+<body class="{% block theme %}default{% endblock %}">
+{% block layout %}{% endblock %}
+</body>
+</html>
+

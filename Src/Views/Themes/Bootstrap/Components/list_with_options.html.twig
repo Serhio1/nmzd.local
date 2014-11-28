@@ -1,0 +1,24 @@
+{# needs bootstrap 2.3 #}
+<table class="table table-striped">
+    <thead>
+    <tr>
+        {% for title in titles %}
+            <th style="text-align:center;">{{ title }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+{% for menu_name, params in list %}
+    <tr>
+        <td style="text-align:center;">
+            {{ menu_name }}
+        </td>
+        <td style="text-align:center;">
+            {% for title, url in params %}
+                <a href="{{ url }}">{{ title }}</a>
+            {% endfor %}
+        </td>
+    </tr>
+{% endfor %}
+    </tbody>
+</table>

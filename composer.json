@@ -1,0 +1,16 @@
+{
+    "require": {
+        "twig/twig": "1.*",
+        "symfony/http-foundation": "2.5.*",
+        "symfony/http-kernel": "2.5.*",
+        "symfony/routing": "2.5.*",
+        "symfony/yaml": "dev-master#499f7d7aa96747ad97940089bd7a1fb24ad8182a",
+        "pfbc/pfbc": "3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "App",
+            "Src\\": "Src"
+        }
+    }
+}

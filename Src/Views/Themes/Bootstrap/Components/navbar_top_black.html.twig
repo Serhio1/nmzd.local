@@ -1,0 +1,13 @@
+<div class="navbar navbar-inverse navbar-static-top">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+        <a class="brand" href="#">{{ brand }}</a>
+        <ul class="nav">
+            {% for id, params in list %}
+                <li class="{% if params.uri == current_url %}active{% endif %}"><a href="{{ params.uri }}">{{ params.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    </div>
+</div>
+

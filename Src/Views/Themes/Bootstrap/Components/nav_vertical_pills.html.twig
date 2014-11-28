@@ -1,0 +1,6 @@
+{# dependencies: Bootstrap 2.3 #}
+<ul class="nav nav-pills nav-stacked">
+    {% for id, params in list %}
+        <li class="{% if params.uri == current_url %}active{% endif %}"><a href="{{ params.uri }}">{{ params.title }}</a></li>
+    {% endfor %}
+</ul>
