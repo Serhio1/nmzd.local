@@ -13,4 +13,8 @@ interface IForm
 
     public function submit(Request $request);
 
+    public function getFormName();
+
+    public function setFormName($name);
+
 }

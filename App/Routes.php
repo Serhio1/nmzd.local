@@ -43,15 +43,7 @@ class Routes
 
     public static function getModules()
     {
-        $resModules = array();
-        $model = Container::get('Admin/AdminModel');
-        $modules = $model->getModules();
-
-        foreach ($modules as $row) {
-            $resModules[$row['module']] = $row['state'];
-        }
-
-        return $resModules;
+        return Container::get('Main/ModuleModel')->getModulesForRouting();
     }
 
     /**

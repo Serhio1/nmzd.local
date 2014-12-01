@@ -5,10 +5,16 @@ namespace App\Core;
 class Router
 {
 
-    public function redirect($url, $data=array())
+    /**
+     * @param $url
+     * @param array $data - POST data to be send to requested page.
+     */
+    public function redirect($uri, $getParams=array(), $data=array())
     {
         $_SESSION['redirectData'] = $data;
-        header('location: '.'/'.$url);
+        $url = static::buildUrl($uri, $getParams);
+        header('location: ' . $url);
+        exit();
     }
 
     /**

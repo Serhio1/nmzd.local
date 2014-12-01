@@ -2,14 +2,20 @@
 
 namespace App\Core;
 
-use Src\Views\Themes\Test\ThemeSettings;
+use App\Core\IForm;
 use Symfony\Component\HttpFoundation\Response;
+use \PFBC\Form;
+use \PFBC\View;
 
 abstract class Controller
 {
     protected $errors = '';
     protected $hints = array();
 
+    protected function render($data = array())
+    {
+        return $this->renderTwig('/Src/Views/layout.html.twig', $data);
+    }
     /**
      * Renders twig template.
      *
@@ -68,19 +74,48 @@ abstract class Controller
         return $globalTemplateData;
     }
 
-    protected function getFormData($form)
-    {
-        return Container::get('form_mngr')->getFormData($form);
-    }
-
     protected function outErrors()
     {
         return Container::get('errors')->outErrors();
     }
 
-    protected function getForm($form)
+    /**
+     * Helper for using forms in controllers.
+     *
+     * @param $form - form object
+     * @param array $config - configuration for form
+     * @param $request - HttpFoundation Request object
+     * @param $block - string with name of block
+     * @throws \Exception
+     */
+    protected function useForm($form, $config, $request, $block)
     {
-        return Container::get('form_mngr')->getForm($form);
+        $formName = $form->getFormName();
+        $formRequest = $request->request->get($formName);
+        if (!empty($formRequest) && $formRequest == $formName) {
+            if (Form::isValid($formName)) {
+
+                if ($form->validate($request)) {
+                    $form->submit($request);
+                }
+            }
+        }
+        $formInstance = $form->build($request, $config);
+
+        Container::get('params')->setThemeData(
+            array(
+                'items' => array(
+                    $block => array(
+                        $formName => array(
+                            'view' => '/Src/Views/Themes/Bootstrap/Components/std_form.html.twig',
+                            'vars' => array(
+                                'form' => $formInstance->render(true),
+                            )
+                        )
+                    )
+                )
+            )
+        );
     }
 
     protected function params()

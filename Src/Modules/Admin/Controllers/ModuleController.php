@@ -1,38 +1,25 @@
 <?php
 
-/**
- * Main controller for Admin module
- */
-
 namespace Src\Modules\Admin\Controllers;
 
+use Src\Modules\Admin\Forms\ModuleListForm;
+use Src\Modules\Entity\Controllers\EntityController;
 use App\Core\Container;
-use App\Core\Controller;
-use App\Core\Router;
-use \PFBC\Form;
-use \PFBC\View;
-use Src\Modules\Admin\Forms\ModulesListForm;
-use Src\Modules\Admin\Models\AdminModel;
 
-
-class MainController extends Controller
+class ModuleController extends EntityController
 {
+    protected $entity = 'Main/ModuleModel';
 
-    public function indexAction($request)
+    protected $entityUrl = '/admin/model';
+
+    protected $form = '\\Src\\Modules\\Admin\\Forms\\ModuleForm';
+
+    protected $block = 'block3';
+
+    public function viewAllAction($request)
     {
-        return $this->render();
-    }
-    /**
-     * Callback for /admin/modules uri.
-     *
-     * @param $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Exception
-     */
-    public function modulesAction($request)
-    {
-        $formConf = array('action' => '');
-        $this->useForm(new ModulesListForm(), $formConf, $request, 'block3');
+        $formConf = array('action' => $this->entityUrl);
+        $this->useForm(new ModuleListForm('update'), $formConf, $request, $this->block);
 
         return $this->render();
     }
@@ -57,5 +44,4 @@ class MainController extends Controller
             )
         );
     }
-
 }

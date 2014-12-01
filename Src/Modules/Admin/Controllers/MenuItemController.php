@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Main controller for Admin module
+ * Controller for Menu Entity
  */
 
 namespace Src\Modules\Admin\Controllers;
@@ -13,30 +13,22 @@ use \PFBC\Form;
 use \PFBC\View;
 use Src\Modules\Admin\Forms\ModulesListForm;
 use Src\Modules\Admin\Models\AdminModel;
+use Src\Modules\Entity\Controllers\EntityController;
 
 
-class MainController extends Controller
+class MenuItemController extends EntityController
 {
+    protected $entity = 'Main/MenuItemModel';
 
-    public function indexAction($request)
-    {
-        return $this->render();
-    }
+    protected $form = '\\Src\\Modules\\Admin\\Forms\\MenuItemForm';
+
+    protected $entityUrl = '/admin/menu/item';
+
+    protected $block = 'block3';
+
     /**
-     * Callback for /admin/modules uri.
-     *
-     * @param $request
-     * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function modulesAction($request)
-    {
-        $formConf = array('action' => '');
-        $this->useForm(new ModulesListForm(), $formConf, $request, 'block3');
-
-        return $this->render();
-    }
-
     protected function preProcessView()
     {
         Container::get('params')->setThemeData('layout', '3-9');

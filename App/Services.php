@@ -85,8 +85,16 @@ class Services
             return $themeSettings;
         });
 
-        Container::register('Admin/AdminModel',function() {
+        /*Container::register('Admin/AdminModel',function() {
             return new \Src\Modules\Admin\Models\AdminModel();
+        });*/
+
+        Container::register('router', function() {
+            return new \App\Core\Router();
+        });
+
+        Container::register('Main/ModuleModel',function() {
+            return new \Src\Modules\Main\Models\ModuleModel();
         });
 
     }

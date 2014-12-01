@@ -15,19 +15,10 @@ use App\Core\Router;
 
 class Module extends BaseModule
 {
-    public function init()
-    {
-
-        /*Container::get('params')->registerMenu('admin_menu', array(
-            'home' => array(
-                'title' => 'Управління Модулями',
-                'uri' => Router::buildUrl('/admin/modules'),
-                'weight' => 0,
-            ),
-        ));*/
-    }
-
-    public function boot()
+    /*
+     * Fires on module enabling.
+     */
+    public function install()
     {
         Container::get('Main/MenuModel')->setMenu(array(
             'modules' => array(
@@ -45,12 +36,36 @@ class Module extends BaseModule
                 'weight'    => '1',
             ),
         ));
+    }
+    /**
+     * Defines module services in service container. Fires on every request.
+     */
+    public function init()
+    {
+        Container::get('Main/MenuModel')->setMenu(array(
+            'menu_create' => array(
+                'menu_name' => 'menus_top_menu',
+                'parent_id' => '0',
+                'title'     => 'Створити Меню',
+                'uri'       => '/admin/menu/create',
+                'weight'    => '0',
+            ),
+        ));
+    }
 
+    /**
+     * Main method. Fires on every request.
+     *
+     * @throws \Exception
+     */
+    public function boot()
+    {
         Container::get('params')->registerMenu('admin_menu',
             Container::get('Main/MenuModel')->getMenu('admin_menu')
         );
-
-        //dump(Container::get('Main/MenuModel')->getMenu('testMenu'));
+        Container::get('params')->registerMenu('menus_top_menu',
+            Container::get('Main/MenuModel')->getMenu('menus_top_menu')
+        );
     }
 
     /**
@@ -86,37 +101,191 @@ class Module extends BaseModule
                     }
                 )
             ),
-            'modules' => array(
-                'uri' => '/modules',
+
+            // Module entity
+            'viewAllModules' => array(
+                'uri' => '/module',
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Admin/Controllers/MainController',
-                            'modules',
+                            'Src/Modules/Admin/Controllers/ModuleController',
+                            'viewAll',
                             $request
                         );
                     }
                 )
             ),
-            'menus' => array(
-                'uri' => '/menus',
+            'createModule' => array(
+                'uri' => '/module/create',
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Admin/Controllers/MainController',
-                            'viewMenus',
+                            'Src/Modules/Admin/Controllers/ModuleController',
+                            'create',
                             $request
                         );
                     }
                 )
             ),
-            'menu' => array(
+            'viewModule' => array(
+                'uri' => '/module/view',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Admin/Controllers/ModuleController',
+                            'viewAll',
+                            $request
+                        );
+                    }
+                )
+            ),
+            'editModule' => array(
+                'uri' => '/module/edit',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Admin/Controllers/ModuleController',
+                            'edit',
+                            $request
+                        );
+                    }
+                )
+            ),
+            'deleteModule' => array(
+                'uri' => '/module/delete',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Admin/Controllers/ModuleController',
+                            'delete',
+                            $request
+                        );
+                    }
+                )
+            ),
+
+            // Menu entity
+            'viewAllMenus' => array(
                 'uri' => '/menu',
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Admin/Controllers/MainController',
-                            'menu',
+                            'Src/Modules/Admin/Controllers/MenuController',
+                            'viewAll',
+                            $request
+                        );
+                    }
+                )
+            ),
+            'createMenu' => array(
+                'uri' => '/menu/create',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Admin/Controllers/MenuController',
+                            'create',
+                            $request
+                        );
+                    }
+                )
+            ),
+            'viewMenu' => array(
+                'uri' => '/menu/view',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            //'Src/Modules/Admin/Controllers/MenuController',
+                            'Src/Modules/Admin/Controllers/MenuItemController',
+                            'viewAll',
+                            $request
+                        );
+                    }
+                )
+            ),
+            'editMenu' => array(
+                'uri' => '/menu/edit',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Admin/Controllers/MenuController',
+                            'edit',
+                            $request
+                        );
+                    }
+                )
+            ),
+            'deleteMenu' => array(
+                'uri' => '/menu/delete',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Admin/Controllers/MenuController',
+                            'delete',
+                            $request
+                        );
+                    }
+                )
+            ),
+
+            // MenuItem Entity
+            'viewAllMenuItems' => array(
+                'uri' => '/menu',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Admin/Controllers/MenuController',
+                            'viewAll',
+                            $request
+                        );
+                    }
+                )
+            ),
+            'createMenuItem' => array(
+                'uri' => '/menu/item/create',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Admin/Controllers/MenuItemController',
+                            'create',
+                            $request
+                        );
+                    }
+                )
+            ),
+
+            'viewMenuItem' => array(
+                'uri' => '/menu/item/view',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Admin/Controllers/MenuItemController',
+                            'view',
+                            $request
+                        );
+                    }
+                )
+            ),
+
+            'editMenuItem' => array(
+                'uri' => '/menu/item/edit',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Admin/Controllers/MenuItemController',
+                            'edit',
+                            $request
+                        );
+                    }
+                )
+            ),
+
+            'deleteMenuItem' => array(
+                'uri' => '/menu/item/delete',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Admin/Controllers/MenuItemController',
+                            'delete',
                             $request
                         );
                     }

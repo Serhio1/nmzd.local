@@ -26,6 +26,10 @@ class Module extends BaseModule
         Container::register('Main/MenuModel',function() {
             return new \Src\Modules\Main\Models\MenuModel();
         });
+        Container::register('Main/MenuItemModel',function() {
+            return new \Src\Modules\Main\Models\MenuItemModel();
+        });
+
         /*Container::get('params')->setMenus('main_menu', array(
             'home' => array(
                 'title' => 'Головна',
