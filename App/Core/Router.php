@@ -2,6 +2,8 @@
 
 namespace App\Core;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class Router
 {
 
@@ -37,9 +39,16 @@ class Router
             $strParams = substr($strParams, 0, -1);
         }
 
-        $protocol = Container::get('params')->getProtocol();
-        $baseUrl = Container::get('params')->getBaseUrl();
-        return $protocol . $baseUrl . $uri . $strParams;
+        $request = Request::createFromGlobals();
+        $protocol = $request->server->get('REQUEST_SCHEME');
+        $baseUrl = $request->server->get('SERVER_NAME');
+        $doc_root = $request->server->get('DOCUMENT_ROOT');
+        $full_path = $request->server->get('SCRIPT_FILENAME');
+        $file = basename($request->server->get('SCRIPT_FILENAME'));
+        $urlSlug = str_replace($file, '', str_replace($doc_root, '', $full_path));
+        $uri = ltrim($uri, '/');
+
+        return $protocol . '://' . $baseUrl . $urlSlug . $uri . $strParams;
     }
 
 }

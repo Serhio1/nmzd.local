@@ -46,6 +46,10 @@ class MenuModel extends EntityModel
                      array('columns' => 'weight', 'type' => 'ASC')
                  );
 
+            foreach ($menuItemsData as $key => $row) {
+                $menuItemsData[$key]['url'] = Router::buildUrl($row['url']);
+            }
+
             return $menuItemsData;
 
         }
