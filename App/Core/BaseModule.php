@@ -5,6 +5,7 @@ namespace App\Core;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouteCollection;
 use App\Routes;
+use Symfony\Component\EventDispatcher\Event;
 
 abstract class BaseModule implements IModule
 {
@@ -16,6 +17,7 @@ abstract class BaseModule implements IModule
         $space = $this->pathToNamespace($controllerPath);
         $controller = new $space();
         $action = $method . 'Action';
+
         return $controller->$action($params);
     }
 

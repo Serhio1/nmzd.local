@@ -12,7 +12,6 @@ use App\Core\Router;
 use \PFBC\Form;
 use \PFBC\View;
 use Src\Modules\Admin\Forms\ModulesListForm;
-use Src\Modules\Admin\Models\AdminModel;
 
 
 class EntityController extends Controller
@@ -36,7 +35,7 @@ class EntityController extends Controller
 
         $list = array();
         $titles = array(
-            'Список Меню',
+            'Список',
             'Опції',
         );
         foreach ($menuList as $row) {

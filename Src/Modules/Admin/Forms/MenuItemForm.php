@@ -17,11 +17,6 @@ class MenuItemForm extends EntityForm
 
     protected $entity = 'Main/MenuItemModel';
 
-    public function getEntity()
-    {
-        return Container::get($this->entity);
-    }
-
     protected function config()
     {
         return array("prevent" => array("bootstrap", "jQuery"));
@@ -44,7 +39,7 @@ class MenuItemForm extends EntityForm
                 'value' => empty($values['title']) ? '' : $values['title'],
             )));
 
-            $form->addElement(new Element\Url('Url:', 'url', array(
+            $form->addElement(new Element\Textbox('Uri:', 'url', array(
                 'required' => 1,
                 'value' => empty($values['url']) ? '' : $values['url'],
             )));

@@ -105,8 +105,6 @@ class Model
         foreach ($values as $col => $value) {
             $selectQuery->bindValue(':' . $col, $value);
         }
-
-
         $selectQuery->execute();
 
         return $selectQuery->fetchAll(PDO::FETCH_ASSOC);
@@ -115,7 +113,9 @@ class Model
     public function selectById($id)
     {
         $row = $this->select($this->table, array('id' => $id));
-        return $row['0'];
+        if (!empty($row['0'])) {
+            return $row['0'];
+        }
     }
 
     protected function update($table, $values, $selectParams)

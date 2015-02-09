@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Core\Container;
+use App\Core\Dispatcher;
 use App\Core\Router;
 use App\Parameters;
 use \Twig_Loader_Filesystem;
@@ -95,6 +96,10 @@ class Services
 
         Container::register('Main/ModuleModel',function() {
             return new \Src\Modules\Main\Models\ModuleModel();
+        });
+
+        Container::register('dispatcher',function() {
+            return Dispatcher::getInstance();
         });
 
     }

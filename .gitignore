@@ -2,3 +2,4 @@
 /Cache/*
 /error.log
 .idea
+/nbproject/private/

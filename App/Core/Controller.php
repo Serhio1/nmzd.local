@@ -10,6 +10,7 @@ use \PFBC\View;
 abstract class Controller
 {
     protected $errors = '';
+
     protected $hints = array();
 
     protected function render($data = array())
@@ -45,11 +46,6 @@ abstract class Controller
     protected function redirect($url, $data=array())
     {
         Container::get('router')->redirect($url, $data);
-    }
-    
-    protected function storage()
-    {
-        return Container::get('session_storage');
     }
 
     protected function preProcessView(){}

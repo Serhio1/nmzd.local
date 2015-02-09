@@ -16,21 +16,6 @@ class MenuModel extends EntityModel
         'title',
     );
 
-    public function getFields()
-    {
-        return $this->fields;
-    }
-
-    public function setMenu($menuItem)
-    {
-        /*foreach ($menuItem as $itemName => $itemValues) {
-            $menuItemExist = $this->select('menus', array('item_name' => $itemName));
-            if (empty($menuItemExist)) {
-                $this->insert('menus', array_merge($itemValues, array('item_name' => $itemName)));
-            }
-        }*/
-    }
-
     public function getMenu($menuKey)
     {
         $menuData = $this->select(

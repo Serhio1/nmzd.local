@@ -12,7 +12,6 @@ use App\Core\Router;
 use \PFBC\Form;
 use \PFBC\View;
 use Src\Modules\Admin\Forms\ModulesListForm;
-use Src\Modules\Admin\Models\AdminModel;
 use Src\Modules\Entity\Controllers\EntityController;
 
 

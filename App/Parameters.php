@@ -16,7 +16,7 @@ class Parameters
 
     protected $themeData = array(
         'title' => 'НМЗД',
-        'layout' => '9-3',
+        'layout' => '12',
         'theme' => 'Bootstrap',
     );
 

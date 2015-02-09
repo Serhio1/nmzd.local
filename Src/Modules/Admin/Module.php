@@ -20,37 +20,14 @@ class Module extends BaseModule
      */
     public function install()
     {
-        Container::get('Main/MenuModel')->setMenu(array(
-            'modules' => array(
-                'menu_name' => 'admin_menu',
-                'parent_id' => '0',
-                'title'     => 'Управління Модулями',
-                'uri'       => '/admin/modules',
-                'weight'    => '0',
-            ),
-            'menus' => array(
-                'menu_name' => 'admin_menu',
-                'parent_id' => '0',
-                'title'     => 'Управління Меню',
-                'uri'       => '/admin/menus',
-                'weight'    => '1',
-            ),
-        ));
+
     }
     /**
      * Defines module services in service container. Fires on every request.
      */
     public function init()
     {
-        Container::get('Main/MenuModel')->setMenu(array(
-            'menu_create' => array(
-                'menu_name' => 'menus_top_menu',
-                'parent_id' => '0',
-                'title'     => 'Створити Меню',
-                'uri'       => '/admin/menu/create',
-                'weight'    => '0',
-            ),
-        ));
+
     }
 
     /**
@@ -60,12 +37,7 @@ class Module extends BaseModule
      */
     public function boot()
     {
-        Container::get('params')->registerMenu('admin_menu',
-            Container::get('Main/MenuModel')->getMenu('admin_menu')
-        );
-        Container::get('params')->registerMenu('menus_top_menu',
-            Container::get('Main/MenuModel')->getMenu('menus_top_menu')
-        );
+
     }
 
     /**

@@ -12,9 +12,11 @@ use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\HttpFoundation\Response;
 use App\Routes;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+
 use Symfony\Component\HttpKernel\EventListener\RouterListener;
 use Symfony\Component\HttpKernel\Controller\ControllerResolver;
+
+use Symfony\Component\EventDispatcher\Event;
 
 
 if (!isset($_SESSION)) {
@@ -25,7 +27,21 @@ $autoloader = require_once __DIR__ . '/vendor/autoload.php';
 
 $request = Request::createFromGlobals();
 $kernel = Kernel::createFromRequest($request, $autoloader);
+
+
+
+
+Container::get('dispatcher')->dispatch('event_name');
+Container::get('dispatcher')->dispatch('event_name');
+
 $kernel->handle($request)->send();
+
+//-------------------------------------------------
+
+
+
+
+
 
 
 

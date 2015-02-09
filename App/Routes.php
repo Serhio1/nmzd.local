@@ -62,7 +62,6 @@ class Routes
         $module->boot();
         $routes->add('home', new Route('', array(
             '_controller' => function (Request $request) {
-                $basePath = Container::get('params')->getBasePath();
                 $controllerPath = 'Src/Modules/Main/Controllers/MainController';
                 $space = static::pathToNamespace($controllerPath);
                 $controller = new $space();

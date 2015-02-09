@@ -12,7 +12,6 @@ use App\Core\Router;
 use \PFBC\Form;
 use \PFBC\View;
 use Src\Modules\Admin\Forms\ModulesListForm;
-use Src\Modules\Admin\Models\AdminModel;
 
 
 class MainController extends Controller
@@ -20,6 +19,7 @@ class MainController extends Controller
 
     public function indexAction($request)
     {
+        Container::get('dispatcher')->dispatch('\Src\Modules\Admin\Controllers\MainController:indexAction');
         return $this->render();
     }
     /**
@@ -49,12 +49,22 @@ class MainController extends Controller
                             'view' => '/Src/Views/Themes/Bootstrap/Components/nav_vertical_pills.html.twig',
                             'vars' => array(
                                 'list' => Container::get('Main/MenuModel')->getMenu('admin_menu'),
-                                'brand' => 'НМЗД',
                             )
                         )
-                    )
+                    ),
+
+                    /*'block1' => array(
+                        'main_menu' => array(
+                            'view' => '/Src/Views/Themes/Bootstrap/Components/navbar_top_black.html.twig',
+                            'vars' => array(
+                                'list' => Container::get('Main/MenuModel')->getMenu('main_menu'),
+                            )
+                        )
+                    ),*/
+
                 )
             )
+
         );
     }
 

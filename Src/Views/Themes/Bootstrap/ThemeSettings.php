@@ -20,7 +20,7 @@ class ThemeSettings
         $themeData['items']['block1']['main_menu'] = array(
             'view' => '/Src/Views/Themes/Bootstrap/Components/navbar_top_black.html.twig',
             'vars' => array(
-                'list' => Container::get('params')->getMenu('main_menu'),
+                'list' => Container::get('Main/MenuModel')->getMenu('main_menu'),
             )
         );
 
