@@ -65,7 +65,7 @@ class EntityModel extends Model
 
     public function selectEntity($selectParams, $columns = array(), $order = array('columns' => 'id', 'type' => 'DESC'))
     {
-        if (!empty($selectParams)) {
+        //if (!empty($selectParams)) {
             $menuItems = $this->select(
                 $this->table,
                 $selectParams,
@@ -73,8 +73,7 @@ class EntityModel extends Model
                 $order
             );
 
-            return $menuItems;
-        }
+        return $menuItems;
     }
 
     /**

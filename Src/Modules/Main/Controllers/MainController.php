@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Core\Controller;
 use App\Core\Container;
-
+use App\Core\Router;
 use Src\Modules\Devel\Forms\GenModuleForm;
 
 class MainController extends Controller
@@ -15,6 +15,12 @@ class MainController extends Controller
     {
         Container::get('dispatcher')
             ->dispatch('Src/Modules/Admin/Controllers/MainController:indexAction');
+        
+        $disciplines = Container::get('Nmkd/DisciplineModel')->selectEntity(array(), array('id','title'));
+        foreach ($disciplines as $key => $value) {
+            $disciplines[$key]['url'] = Router::buildUrl('nmkd/discipline/menu', array('id' => $disciplines[$key]['id']));
+            $disciplines[$key]['parent_id'] = -1;
+        }
 
 
         Container::get('params')->setThemeData('layout', '12');
@@ -34,7 +40,7 @@ class MainController extends Controller
                         'nmkd_menu' => array(
                             'view' => '/Src/Views/Themes/Bootstrap/Components/nav_vertical_pills.html.twig',
                             'vars' => array(
-                                'list' => Container::get('params')->getMenu('discipline_menu'),
+                                'list' => $disciplines,
                                 'brand' => 'НМЗД',
                             )
                         )
@@ -42,7 +48,7 @@ class MainController extends Controller
                 )
             )
         );
-
+        
         return $this->render();
     }
 }

@@ -127,6 +127,18 @@ class Module extends BaseModule
                     }
                 )
             ),
+            'disciplineMenu' => array(
+                'uri' => '/discipline/menu',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Nmkd/Controllers/DisciplineController',
+                            'menu',
+                            $request
+                        );
+                    }
+                )
+            ),
 
             // Lab entity
             'viewAllLabs' => array(
@@ -136,6 +148,18 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Nmkd/Controllers/LabController',
                             'viewAll',
+                            $request
+                        );
+                    }
+                )
+            ),
+            'createLab' => array(
+                'uri' => '/lab/create',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Nmkd/Controllers/LabController',
+                            'create',
                             $request
                         );
                     }
