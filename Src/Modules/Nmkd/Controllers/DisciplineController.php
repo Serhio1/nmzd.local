@@ -19,8 +19,14 @@ class DisciplineController extends EntityController
     
     public function menuAction(Request $request)
     {
-        $request->cookies->add(array('disc_id' => $request->query->get('id')));
+        //$request->cookies->add(array('discipline_id' => $request->query->get('id')));
         Container::get('params')->setThemeData('layout', '12');
+        //TODO: add possibility to send context.
+        $disciplineMenu = Container::get('Main/MenuModel')->getMenu('discipline_menu');
+        foreach ($disciplineMenu as $key => $value) {
+            $disciplineMenu[$key]['url'] .= '?discipline_id=' . $request->query->get('id');
+        }
+                
         Container::get('params')->setThemeData(
             array(
                 'items' => array(
@@ -36,7 +42,7 @@ class DisciplineController extends EntityController
                         'nmkd_menu' => array(
                             'view' => '/Src/Views/Themes/Bootstrap/Components/nav_vertical_pills.html.twig',
                             'vars' => array(
-                                'list' => Container::get('Main/MenuModel')->getMenu('discipline_menu'),
+                                'list' => $disciplineMenu,
                                 'brand' => 'НМЗД',
                             )
                         )
