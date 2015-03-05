@@ -51,4 +51,14 @@ class MainController extends Controller
         
         return $this->render();
     }
+    
+    public function securityAction(Request $request)
+    {
+        $formConf = array('action' => Router::buildUrl($request->server->get('REQUEST_URI')));
+        $this->useForm(new \Src\Modules\Main\Forms\SecurityForm('check_password'), $formConf, $request, 'block3');
+
+        
+        return $this->render();
+    }
+
 }

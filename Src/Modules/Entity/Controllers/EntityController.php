@@ -18,8 +18,6 @@ class EntityController extends Controller
 {
 
     /**
-     * Callback for /admin/menus uri.
-     *
      * @param $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception

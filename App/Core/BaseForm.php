@@ -11,7 +11,7 @@ use App\Core\Container;
 
 class BaseForm
 {
-
+    
     public function __construct($operation)
     {
         $this->operation = $operation;
@@ -21,7 +21,7 @@ class BaseForm
     {
         return $this->formName;
     }
-
+    
     public function setFormName($name)
     {
         $this->formName = $name;
@@ -39,29 +39,47 @@ class BaseForm
      */
     public function build($request, $config = array())
     {
+        $form = new Form($this->getFormName());
         $_SESSION[$this->formName]['action'] = $config['action'];
+        $config['action'] = '';
 
         if (empty($this->steps)) {
             throw new \Exception('Form requires at least one step.');
         }
-        $requestedStep = $request->query->get('step');
+        $requestedStep = $request->request->get('step');
         if (empty($requestedStep)) {
             $requestedStep = 0;
         }
+        
+        if ($requestedStep == 'finish') {
+            $config['action'] = '';
+            if (!empty($_SERVER["QUERY_STRING"])) {
+                $config['action'] .= '?' . $_SERVER["QUERY_STRING"];
+            }
+        }
 
         $requestedStep++;
-        $form = new Form($this->getFormName());
+        
+        
+        
         if (empty($this->steps[$requestedStep])) {
             $form->addElement(new Element\Hidden('step', 'finish'));
+            //$config['action'] = $_SESSION[$this->formName]['action'];
+            //unset($_SESSION[$this->formName]['action']);
         } else {
             $form->addElement(new Element\Hidden('step', $requestedStep));
+            //$config['action'] = '';
         }
-        $config['action'] = '?' . $_SERVER["QUERY_STRING"];
-
+        /*if (!empty($_SERVER["QUERY_STRING"])) {
+            $config['action'] .= '?' . $_SERVER["QUERY_STRING"];
+        }*/
+        
         $requestedStep--;
         $callback = $this->steps[$requestedStep];
+        
         $form = $this->$callback($form, $request, $config);
-
+        $form->configure($config);
+        
         return $form;
     }
 

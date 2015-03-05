@@ -5,6 +5,8 @@ namespace Src\Modules\Nmkd\Forms;
 use Src\Modules\Entity\Forms\EntityForm;
 use Symfony\Component\HttpFoundation\Request;
 use PFBC\Element;
+use Src\Modules\Nmkd\Forms\Elements\LabCKEditor\LabCKEditor;
+use App\Core\Container;
 
 class LabForm extends EntityForm
 {
@@ -19,32 +21,79 @@ class LabForm extends EntityForm
     }
 
     protected function defineFields($form, $values = array(), $operation)
-    {
+    {     
         $request = Request::createFromGlobals();
         if ($operation == 'delete') {
             $form->addElement(new Element\HTML('<legend>Видалити лабораторну?</legend>'));
             $form->addElement(new Element\Button('Відмінити', 'button', array(
                 'onclick' => 'history.go(-1);'
             )));
-            //$request->cookies->get('discipline_id')
-            //$form->addElement(new Element\Hidden('id', $request->query->get('id')));
             $form->addElement(new Element\Button('Видалити'));
         } else {
-            $form->addElement(new Element\HTML('<legend>Створення нової лабораторної</legend>'));
             
-            $form->addElement(new Element\Hidden('discipline_id', $request->query->get('discipline_id')));
+            if ($operation == 'create') {
+                $form->addElement(new Element\HTML('<legend>Створення нової лабораторної</legend>'));
+                $form->addElement(new Element\Hidden('theme'));
+                $form->addElement(new Element\Hidden('type'));
+                $form->addElement(new Element\Hidden('purpose'));
+                $form->addElement(new Element\Hidden('theory'));
+                $form->addElement(new Element\Hidden('execution_order'));
+                $form->addElement(new Element\Hidden('content_structure'));
+                $form->addElement(new Element\Hidden('requirements'));
+                $form->addElement(new Element\Hidden('individual_variants'));
+                $form->addElement(new Element\Hidden('literature'));
+                $form->addElement(new Element\Textbox('Назва:', 'title', array(
+                    'required' => 1,
+                    'value' => empty($values['title']) ? '' : $values['title'],
+                )));
+                
 
-            $form->addElement(new Element\Textbox('Назва:', 'title', array(
-                'required' => 1,
-                'value' => empty($values['title']) ? '' : $values['title'],
-            )));
-
-            $form->addElement(new Element\CKEditor('Текст лабораторної:', 'body'));
+                // easy to break. If not working, check ckeditor id in lab_form_process.js
+                $form->addElement(new LabCKEditor('Текст лабораторної:', 'body'));
+                $form->addElement(new Element\HTML('<script type="text/javascript" src="/Src/Modules/Nmkd/Forms/Elements/LabCKEditor/js/lab_form_process.js"></script>'));
+            }
+            if ($operation == 'update') {
+                $form->addElement(new Element\HTML('<legend>Редагування лабораторної</legend>'));
+                $form->addElement(new Element\Textbox('Назва:', 'title', array(
+                    'required' => 1,
+                    'value' => empty($values['title']) ? '' : $values['title'],
+                )));
+                $form->addElement(new Element\CKEditor('Тема:', 'theme', array(
+                    'value' => $values['theme']
+                )));
+                $form->addElement(new Element\CKEditor('Вид заняття:', 'type', array(
+                    'value' => $values['type']
+                )));
+                $form->addElement(new Element\CKEditor('Мета:', 'purpose', array(
+                    'value' => $values['purpose']
+                )));
+                $form->addElement(new Element\CKEditor('Теоретичний матеріал:', 'theory', array(
+                    'value' => $values['theory']
+                )));
+                $form->addElement(new Element\CKEditor('Порядок виконання:', 'execution_order', array(
+                    'value' => $values['execution_order']
+                )));
+                $form->addElement(new Element\CKEditor('Структура змісту текстових розділів звітних матеріалів:', 'content_structure', array(
+                    'value' => $values['content_structure']
+                )));
+                $form->addElement(new Element\CKEditor('Вимоги до оформлення роботи та опис процедури її захисту:', 'requirements', array(
+                    'value' => $values['requirements']
+                )));
+                $form->addElement(new Element\CKEditor('Варіанти індивідуальних завдань:', 'individual_variants', array(
+                    'value' => $values['individual_variants']
+                )));
+                $form->addElement(new Element\CKEditor('Рекомендована література:', 'literature', array(
+                    'value' => $values['literature']
+                )));
+            }
+            
 
             $form->addElement(new Element\Button('Відмінити', 'button', array(
                 'onclick' => 'history.go(-1);'
             )));
-            $form->addElement(new Element\Button('Зберегти'));
+            $form->addElement(new Element\Button('Зберегти', 'submit'));
+            
+            
         }
 
         return $form;
@@ -61,9 +110,6 @@ class LabForm extends EntityForm
         foreach ($fields as $field) {
             $params[$field] = $request->request->get($field);
         }
-        dump($request->request);
-        echo '<hr>';
-        dump($params); die();
         if ($this->operation == 'create') {
             $vars['parent_id'] = $id;
         } else {
@@ -88,8 +134,12 @@ class LabForm extends EntityForm
         if ($step == 'finish') {
             $this->finishEvent($vars);
         }
-        //echo 'trololo'; die('trololo');
 
+    }
+    
+    protected function finishEvent($vars)
+    {
+        Container::get('router')->redirect($_SESSION[$this->formName]['action'] . '?id=' . $vars['parent_id']);
     }
 
 }

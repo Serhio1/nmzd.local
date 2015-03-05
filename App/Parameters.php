@@ -11,6 +11,8 @@ class Parameters
     public $dbPass = 'postgres';
     public $dbName = 'nmzd';
     public $dbChar = 'utf8';
+    
+    public $adminPassword = 'fB3hiU9'; 
 
     public $cache = false;
 

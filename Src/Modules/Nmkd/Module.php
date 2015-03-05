@@ -33,6 +33,10 @@ class Module extends BaseModule
         Container::register('Nmkd/LabModel',function() {
             return new \Src\Modules\Nmkd\Models\LabModel();
         });
+        
+        Container::register('Nmkd/TypesModel',function() {
+            return new \Src\Modules\Nmkd\Models\TypesModel();
+        });
     }
 
     /**
@@ -66,6 +70,18 @@ class Module extends BaseModule
     public function getRoutes()
     {
         return array(
+            'createNmkd' => array(
+                'uri' => '/nmkd/create',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Nmkd/Controllers/NmkdController',
+                            'create',
+                            $request
+                        );
+                    }
+                )
+            ),
             // Discipline entity
             'viewAllDiscipline' => array(
                 'uri' => '/discipline',
@@ -74,7 +90,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Nmkd/Controllers/DisciplineController',
                             'viewAll',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -86,7 +103,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Nmkd/Controllers/DisciplineController',
                             'create',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -110,7 +128,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Nmkd/Controllers/DisciplineController',
                             'edit',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -122,7 +141,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Nmkd/Controllers/DisciplineController',
                             'delete',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -153,6 +173,18 @@ class Module extends BaseModule
                     }
                 )
             ),
+            'viewLab' => array(
+                'uri' => '/lab/view',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Nmkd/Controllers/LabController',
+                            'view',
+                            $request
+                        );
+                    }
+                )
+            ),
             'createLab' => array(
                 'uri' => '/lab/create',
                 'settings' => array(
@@ -165,6 +197,98 @@ class Module extends BaseModule
                     }
                 )
             ),
+            'editLab' => array(
+                'uri' => '/lab/edit',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Nmkd/Controllers/LabController',
+                            'edit',
+                            $request
+                        );
+                    }
+                )
+            ),
+            'deleteLab' => array(
+                'uri' => '/lab/delete',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Nmkd/Controllers/LabController',
+                            'delete',
+                            $request
+                        );
+                    }
+                )
+            ),
+                        
+            // Types entity
+            'viewAllTypes' => array(
+                'uri' => '/types',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Nmkd/Controllers/TypesController',
+                            'viewAll',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+            'viewType' => array(
+                'uri' => '/types/view',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Nmkd/Controllers/TypesController',
+                            'view',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+            'createType' => array(
+                'uri' => '/types/create',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Nmkd/Controllers/TypesController',
+                            'create',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+            'editType' => array(
+                'uri' => '/types/edit',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Nmkd/Controllers/TypesController',
+                            'edit',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+            'deleteType' => array(
+                'uri' => '/types/delete',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Nmkd/Controllers/TypesController',
+                            'delete',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+            
         );
     }
 }

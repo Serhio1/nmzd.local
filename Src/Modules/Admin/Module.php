@@ -37,7 +37,7 @@ class Module extends BaseModule
      */
     public function boot()
     {
-
+        
     }
 
     /**
@@ -68,7 +68,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/MainController',
                             'index',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -82,7 +83,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/ModuleController',
                             'viewAll',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -94,7 +96,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/ModuleController',
                             'create',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -106,7 +109,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/ModuleController',
                             'viewAll',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -118,7 +122,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/ModuleController',
                             'edit',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -130,7 +135,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/ModuleController',
                             'delete',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -144,7 +150,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/MenuController',
                             'viewAll',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -156,7 +163,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/MenuController',
                             'create',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -169,7 +177,8 @@ class Module extends BaseModule
                             //'Src/Modules/Admin/Controllers/MenuController',
                             'Src/Modules/Admin/Controllers/MenuItemController',
                             'viewAll',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -181,7 +190,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/MenuController',
                             'edit',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -193,7 +203,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/MenuController',
                             'delete',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -207,7 +218,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/MenuController',
                             'viewAll',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -219,7 +231,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/MenuItemController',
                             'create',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -232,7 +245,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/MenuItemController',
                             'view',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -245,7 +259,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/MenuItemController',
                             'edit',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -258,7 +273,8 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/MenuItemController',
                             'delete',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )

@@ -12,14 +12,15 @@ class LabModel extends EntityModel
     protected $fields = array(
         'discipline_id',
         'theme',
-        'id_type',
+        'type',
         'purpose',
         'theory',
         'execution_order',
         'content_structure',
         'requirements',
         'individual_variants',
-        'literature'
+        'literature',
+        'title'
     );
 
     protected $parent = 'discipline';

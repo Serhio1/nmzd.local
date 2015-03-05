@@ -8,9 +8,15 @@
             {% include stylesheet %}
         {% endfor %}
     </style>
+    {% for topScript in jsTop %}
+        <script type="text/javascript" src="{{topScript}}"></script>
+    {% endfor %}
 </head>
-<body class="{% block theme %}default{% endblock %}">
+<body class="{% block theme %}default{% endblock %}" onload="">
 {% block layout %}{% endblock %}
+    {% for bottomScript in jsBottom %}
+        <script type="text/javascript" src="{{bottomScript}}"></script>
+    {% endfor %}
 </body>
 </html>
 

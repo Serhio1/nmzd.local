@@ -19,12 +19,11 @@ class DisciplineController extends EntityController
     
     public function menuAction(Request $request)
     {
-        //$request->cookies->add(array('discipline_id' => $request->query->get('id')));
         Container::get('params')->setThemeData('layout', '12');
         //TODO: add possibility to send context.
         $disciplineMenu = Container::get('Main/MenuModel')->getMenu('discipline_menu');
         foreach ($disciplineMenu as $key => $value) {
-            $disciplineMenu[$key]['url'] .= '?discipline_id=' . $request->query->get('id');
+            $disciplineMenu[$key]['url'] .= '?id=' . $request->query->get('id');
         }
                 
         Container::get('params')->setThemeData(

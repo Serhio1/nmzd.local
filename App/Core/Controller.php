@@ -6,6 +6,7 @@ use App\Core\IForm;
 use Symfony\Component\HttpFoundation\Response;
 use \PFBC\Form;
 use \PFBC\View;
+use Symfony\Component\HttpFoundation\Request;
 
 abstract class Controller
 {
@@ -17,6 +18,7 @@ abstract class Controller
     {
         return $this->renderTwig('/Src/Views/layout.html.twig', $data);
     }
+    
     /**
      * Renders twig template.
      *
@@ -84,13 +86,12 @@ abstract class Controller
      * @param $block - string with name of block
      * @throws \Exception
      */
-    protected function useForm($form, $config, $request, $block)
+    protected function useForm($form, $config, $request, $block, $params = array())
     {
         $formName = $form->getFormName();
         $formRequest = $request->request->get($formName);
         if (!empty($formRequest) && $formRequest == $formName) {
             if (Form::isValid($formName)) {
-
                 if ($form->validate($request)) {
                     $form->submit($request);
                 }
