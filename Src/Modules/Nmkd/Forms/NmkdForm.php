@@ -9,6 +9,7 @@ use Src\Modules\Nmkd\Views\LabCKEditor;
 use App\Core\Container;
 use App\Core\BaseForm;
 use Src\Modules\Nmkd\Forms\Elements\Hierarchy\Hierarchy;
+use Src\Modules\Nmkd\Forms\Elements\CheckboxMatrix\CheckboxMatrix;
 
 class NmkdForm extends BaseForm
 {
@@ -112,6 +113,17 @@ class NmkdForm extends BaseForm
     public function setTypes($form, $request, $config)
     {
         $this->setHierarchyProcess($request);
+        
+        $form->addElement(new Element\HTML('<legend>Оберіть типи запитань</legend>'));
+        $form->addElement(new CheckboxMatrix("Checkboxes:", "CheckboxMatrix", array(
+            'test1',
+            'test2'
+        )));
+        
+        $form->addElement(new Element\Button('Назад', 'button', array(
+            'onclick' => 'history.go(-1);'
+        )));
+        $form->addElement(new Element\Button('Зберегти', 'submit'));
         
         return $form;
     }
