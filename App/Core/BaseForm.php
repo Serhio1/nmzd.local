@@ -39,6 +39,7 @@ class BaseForm
      */
     public function build($request, $config = array())
     {
+        if ($request->request->get('step') == 'finish') { $this->submit($request); }
         $form = new Form($this->getFormName());
         $_SESSION[$this->formName]['action'] = $config['action'];
         $config['action'] = '';
@@ -57,28 +58,27 @@ class BaseForm
                 $config['action'] .= '?' . $_SERVER["QUERY_STRING"];
             }
         }
-
-        $requestedStep++;
+        
+        
+            $requestedStep++;
+            if (empty($this->steps[$requestedStep])) {
+                $form->addElement(new Element\Hidden('step', 'finish'));
+                //$config['action'] = $_SESSION[$this->formName]['action'];
+                //unset($_SESSION[$this->formName]['action']);
+            } else {
+                $form->addElement(new Element\Hidden('step', $requestedStep));
+                //$config['action'] = '';
+            }
+            $requestedStep--;
+            $callback = $this->steps[$requestedStep];
+            $form = $this->$callback($form, $request, $config);
+            $form->configure($config);
         
         
         
-        if (empty($this->steps[$requestedStep])) {
-            $form->addElement(new Element\Hidden('step', 'finish'));
-            //$config['action'] = $_SESSION[$this->formName]['action'];
-            //unset($_SESSION[$this->formName]['action']);
-        } else {
-            $form->addElement(new Element\Hidden('step', $requestedStep));
-            //$config['action'] = '';
-        }
-        /*if (!empty($_SERVER["QUERY_STRING"])) {
-            $config['action'] .= '?' . $_SERVER["QUERY_STRING"];
-        }*/
         
-        $requestedStep--;
-        $callback = $this->steps[$requestedStep];
         
-        $form = $this->$callback($form, $request, $config);
-        $form->configure($config);
+        
         
         return $form;
     }
@@ -92,6 +92,13 @@ class BaseForm
     public function validate(Request $request)
     {
         return true;
+    }
+    
+    public function submit(Request $request){}
+    
+    protected function finishEvent()
+    {
+        Container::get('router')->redirect($_SESSION[$this->formName]['action']);
     }
 
 }

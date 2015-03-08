@@ -60,7 +60,7 @@ class MenuForm extends EntityForm
         return $form;
     }
 
-    protected function finishEvent($vars)
+    protected function finishEvent($vars = array())
     {
         if ($this->operation == 'create') {
             if (!empty($vars['id'])) {

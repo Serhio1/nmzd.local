@@ -106,7 +106,7 @@ class EntityForm extends BaseForm
 
     }
 
-    protected function finishEvent($vars)
+    protected function finishEvent($vars = array())
     {
         Container::get('router')->redirect($_SESSION[$this->formName]['action']);
     }

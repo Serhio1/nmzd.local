@@ -137,7 +137,7 @@ class LabForm extends EntityForm
 
     }
     
-    protected function finishEvent($vars)
+    protected function finishEvent($vars = array())
     {
         Container::get('router')->redirect($_SESSION[$this->formName]['action'] . '?id=' . $vars['parent_id']);
     }

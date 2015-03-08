@@ -65,7 +65,7 @@ class MenuItemForm extends EntityForm
         return $form;
     }
 
-    protected function finishEvent($vars)
+    protected function finishEvent($vars = array())
     {
         Container::get('router')->redirect('/admin/menu/view', array('id' => $vars['parent_id']));
     }

@@ -47,9 +47,9 @@ class SecurityForm extends BaseForm
         if ($this->operation == 'check_password') {
             if ($request->request->get('password') == Container::get('params')->adminPassword) {
                 $_SESSION['security_access'] = true;
-                Container::get('router')->redirect($_SESSION[$this->formName]['action']);
             }
         }
+        $this->finishEvent();
         
         
     }
