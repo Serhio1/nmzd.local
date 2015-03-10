@@ -2,10 +2,8 @@
 
 namespace Src\Modules\Nmkd\Forms;
 
-use Src\Modules\Entity\Forms\EntityForm;
 use Symfony\Component\HttpFoundation\Request;
 use PFBC\Element;
-use Src\Modules\Nmkd\Views\LabCKEditor;
 use App\Core\Container;
 use App\Core\BaseForm;
 use Src\Modules\Nmkd\Forms\Elements\Hierarchy\Hierarchy;
@@ -76,6 +74,7 @@ class NmkdForm extends BaseForm
     public function setHierarchy($form, $request, $config)
     {
         $this->inputProcess($request);
+        
         $form->addElement(new Element\HTML('<legend>Визначте структуру запитань</legend>'));
         
         
@@ -114,10 +113,16 @@ class NmkdForm extends BaseForm
     {
         $this->setHierarchyProcess($request);
         
+        $types = Container::get('Nmkd/TypesModel')->getEntityList();
+        $typesArr = array();
+        foreach ($types as $row=>$values) {
+            $typesArr[$values['id']] = $values['title'];
+        }
+        
         $form->addElement(new Element\HTML('<legend>Оберіть типи запитань</legend>'));
         $form->addElement(new CheckboxMatrix("Checkboxes:", "CheckboxMatrix", array(
-            'test1',
-            'test2'
+            'vertical' => $_SESSION[$this->formName]['questions'],
+            'horizontal' => $typesArr
         )));
         
         $form->addElement(new Element\Button('Назад', 'button', array(
@@ -130,11 +135,7 @@ class NmkdForm extends BaseForm
     
     public function submit(Request $request)
     {
-        if ($this->operation == 'check_password') {
-            if ($request->request->get('password') == Container::get('params')->adminPassword) {
-                $_SESSION['security_access'] = true;
-            }
-        }
+        
     }
 
 }

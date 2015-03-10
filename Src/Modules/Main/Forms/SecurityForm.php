@@ -33,12 +33,6 @@ class SecurityForm extends BaseForm
         )));
         $form->addElement(new Element\Button('Зберегти', 'submit'));
         
-        
-        /*$step = $request->request->get('step');
-        if ($step == 'finish') {
-            $this->submit($request);
-        }*/
-        
         return $form;
     }
     
@@ -50,8 +44,6 @@ class SecurityForm extends BaseForm
             }
         }
         $this->finishEvent();
-        
-        
     }
 
 }

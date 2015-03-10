@@ -39,10 +39,25 @@ class BaseForm
      */
     public function build($request, $config = array())
     {
-        if ($request->request->get('step') == 'finish') { $this->submit($request); }
-        $form = new Form($this->getFormName());
+        
+        
+        if (!empty($_SERVER["QUERY_STRING"])) {
+            $config['action'] .= '?' . $_SERVER["QUERY_STRING"];
+        }
         $_SESSION[$this->formName]['action'] = $config['action'];
         $config['action'] = '';
+        
+        if ($request->request->get('step') == 'finish') { 
+            //$config['action'] = $_SESSION[$this->formName]['action'];
+            if (!empty($_SERVER["QUERY_STRING"])) {
+                $config['action'] .= '?' . $_SERVER["QUERY_STRING"];
+            }
+            $this->submit($request);
+            $this->finishEvent();
+        }
+        $form = new Form($this->getFormName());
+        
+        
 
         if (empty($this->steps)) {
             throw new \Exception('Form requires at least one step.');
@@ -52,12 +67,8 @@ class BaseForm
             $requestedStep = 0;
         }
         
-        if ($requestedStep == 'finish') {
-            $config['action'] = '';
-            if (!empty($_SERVER["QUERY_STRING"])) {
-                $config['action'] .= '?' . $_SERVER["QUERY_STRING"];
-            }
-        }
+        
+        
         
         
             $requestedStep++;
