@@ -1,0 +1,22 @@
+/**
+ * Defines styles for CheckboxMatrix PFBC element
+ */
+.checkbox-matrix td {
+    position: relative;
+}
+
+.checkbox-matrix td label {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+}
+
+.checkbox-matrix .check-matrix-element:checked + label {
+    background-color: #DFF0D8;
+    background-image: url(/Src/Modules/Nmkd/Forms/Elements/CheckboxMatrix/img/green-tick.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+}
