@@ -2,9 +2,9 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.3.5
--- Dumped by pg_dump version 9.3.5
--- Started on 2015-02-09 22:49:27 EET
+-- Dumped from database version 9.3.6
+-- Dumped by pg_dump version 9.3.6
+-- Started on 2015-03-10 22:57:15 EET
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -14,7 +14,7 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- TOC entry 200 (class 3079 OID 11789)
+-- TOC entry 201 (class 3079 OID 11789)
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
 
@@ -22,8 +22,8 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 2156 (class 0 OID 0)
--- Dependencies: 200
+-- TOC entry 2160 (class 0 OID 0)
+-- Dependencies: 201
 -- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
 
@@ -116,6 +116,21 @@ CREATE SEQUENCE id_lab
 
 
 ALTER TABLE public.id_lab OWNER TO postgres;
+
+--
+-- TOC entry 200 (class 1259 OID 16831)
+-- Name: id_lab_structure; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE id_lab_structure
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.id_lab_structure OWNER TO postgres;
 
 --
 -- TOC entry 175 (class 1259 OID 16685)
@@ -326,17 +341,18 @@ ALTER TABLE public.laboratory OWNER TO postgres;
 --
 
 CREATE TABLE laboratory_structure (
-    id integer NOT NULL,
+    id integer DEFAULT nextval('id_lab_structure'::regclass) NOT NULL,
     discipline_id integer,
     theme text,
-    id_type integer,
     purpose text,
     theory text,
     execution_order text,
     content_structure text,
     requirements text,
     individual_variants text,
-    literature text
+    literature text,
+    type text,
+    title character varying
 );
 
 
@@ -513,14 +529,14 @@ ALTER TABLE public.themes_questions OWNER TO postgres;
 
 CREATE TABLE types (
     id integer NOT NULL,
-    name character varying
+    title character varying
 );
 
 
 ALTER TABLE public.types OWNER TO postgres;
 
 --
--- TOC entry 2142 (class 2613 OID 16449)
+-- TOC entry 2146 (class 2613 OID 16449)
 -- Name: 16449; Type: BLOB; Schema: -; Owner: postgres
 --
 
@@ -530,7 +546,7 @@ SELECT pg_catalog.lo_create('16449');
 ALTER LARGE OBJECT 16449 OWNER TO postgres;
 
 --
--- TOC entry 2143 (class 2613 OID 16450)
+-- TOC entry 2147 (class 2613 OID 16450)
 -- Name: 16450; Type: BLOB; Schema: -; Owner: postgres
 --
 
@@ -540,7 +556,7 @@ SELECT pg_catalog.lo_create('16450');
 ALTER LARGE OBJECT 16450 OWNER TO postgres;
 
 --
--- TOC entry 2144 (class 2613 OID 16451)
+-- TOC entry 2148 (class 2613 OID 16451)
 -- Name: 16451; Type: BLOB; Schema: -; Owner: postgres
 --
 
@@ -550,7 +566,7 @@ SELECT pg_catalog.lo_create('16451');
 ALTER LARGE OBJECT 16451 OWNER TO postgres;
 
 --
--- TOC entry 2145 (class 2613 OID 16452)
+-- TOC entry 2149 (class 2613 OID 16452)
 -- Name: 16452; Type: BLOB; Schema: -; Owner: postgres
 --
 
@@ -560,7 +576,7 @@ SELECT pg_catalog.lo_create('16452');
 ALTER LARGE OBJECT 16452 OWNER TO postgres;
 
 --
--- TOC entry 2146 (class 2613 OID 16478)
+-- TOC entry 2150 (class 2613 OID 16478)
 -- Name: 16478; Type: BLOB; Schema: -; Owner: postgres
 --
 
@@ -570,7 +586,7 @@ SELECT pg_catalog.lo_create('16478');
 ALTER LARGE OBJECT 16478 OWNER TO postgres;
 
 --
--- TOC entry 2147 (class 2613 OID 16479)
+-- TOC entry 2151 (class 2613 OID 16479)
 -- Name: 16479; Type: BLOB; Schema: -; Owner: postgres
 --
 
@@ -580,7 +596,7 @@ SELECT pg_catalog.lo_create('16479');
 ALTER LARGE OBJECT 16479 OWNER TO postgres;
 
 --
--- TOC entry 2112 (class 0 OID 16666)
+-- TOC entry 2115 (class 0 OID 16666)
 -- Dependencies: 170
 -- Data for Name: control_work_type; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -590,7 +606,7 @@ COPY control_work_type (id, name) FROM stdin;
 
 
 --
--- TOC entry 2114 (class 0 OID 16674)
+-- TOC entry 2117 (class 0 OID 16674)
 -- Dependencies: 172
 -- Data for Name: discipline; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -601,16 +617,16 @@ COPY discipline (id, semester, title, general_hours, lect_hours, lab_hours, prac
 
 
 --
--- TOC entry 2157 (class 0 OID 0)
+-- TOC entry 2161 (class 0 OID 0)
 -- Dependencies: 171
 -- Name: id_disc; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('id_disc', 2, true);
+SELECT pg_catalog.setval('id_disc', 3, true);
 
 
 --
--- TOC entry 2158 (class 0 OID 0)
+-- TOC entry 2162 (class 0 OID 0)
 -- Dependencies: 173
 -- Name: id_ind; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -619,7 +635,7 @@ SELECT pg_catalog.setval('id_ind', 211, true);
 
 
 --
--- TOC entry 2159 (class 0 OID 0)
+-- TOC entry 2163 (class 0 OID 0)
 -- Dependencies: 174
 -- Name: id_lab; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -628,7 +644,16 @@ SELECT pg_catalog.setval('id_lab', 148, true);
 
 
 --
--- TOC entry 2160 (class 0 OID 0)
+-- TOC entry 2164 (class 0 OID 0)
+-- Dependencies: 200
+-- Name: id_lab_structure; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('id_lab_structure', 27, true);
+
+
+--
+-- TOC entry 2165 (class 0 OID 0)
 -- Dependencies: 175
 -- Name: id_lect; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -637,7 +662,7 @@ SELECT pg_catalog.setval('id_lect', 257, true);
 
 
 --
--- TOC entry 2161 (class 0 OID 0)
+-- TOC entry 2166 (class 0 OID 0)
 -- Dependencies: 176
 -- Name: id_lit; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -646,7 +671,7 @@ SELECT pg_catalog.setval('id_lit', 1, false);
 
 
 --
--- TOC entry 2162 (class 0 OID 0)
+-- TOC entry 2167 (class 0 OID 0)
 -- Dependencies: 198
 -- Name: id_menu_item; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -655,16 +680,16 @@ SELECT pg_catalog.setval('id_menu_item', 1, false);
 
 
 --
--- TOC entry 2163 (class 0 OID 0)
+-- TOC entry 2168 (class 0 OID 0)
 -- Dependencies: 196
 -- Name: id_menus; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('id_menus', 68, true);
+SELECT pg_catalog.setval('id_menus', 72, true);
 
 
 --
--- TOC entry 2164 (class 0 OID 0)
+-- TOC entry 2169 (class 0 OID 0)
 -- Dependencies: 177
 -- Name: id_module; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -673,7 +698,7 @@ SELECT pg_catalog.setval('id_module', 76, true);
 
 
 --
--- TOC entry 2165 (class 0 OID 0)
+-- TOC entry 2170 (class 0 OID 0)
 -- Dependencies: 178
 -- Name: id_pract; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -682,7 +707,7 @@ SELECT pg_catalog.setval('id_pract', 210, true);
 
 
 --
--- TOC entry 2166 (class 0 OID 0)
+-- TOC entry 2171 (class 0 OID 0)
 -- Dependencies: 179
 -- Name: id_self; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -691,7 +716,7 @@ SELECT pg_catalog.setval('id_self', 146, true);
 
 
 --
--- TOC entry 2167 (class 0 OID 0)
+-- TOC entry 2172 (class 0 OID 0)
 -- Dependencies: 180
 -- Name: id_sem; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -700,7 +725,7 @@ SELECT pg_catalog.setval('id_sem', 129, true);
 
 
 --
--- TOC entry 2168 (class 0 OID 0)
+-- TOC entry 2173 (class 0 OID 0)
 -- Dependencies: 181
 -- Name: id_session; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -709,7 +734,7 @@ SELECT pg_catalog.setval('id_session', 2, true);
 
 
 --
--- TOC entry 2169 (class 0 OID 0)
+-- TOC entry 2174 (class 0 OID 0)
 -- Dependencies: 182
 -- Name: id_tq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -718,7 +743,7 @@ SELECT pg_catalog.setval('id_tq', 3220, true);
 
 
 --
--- TOC entry 2170 (class 0 OID 0)
+-- TOC entry 2175 (class 0 OID 0)
 -- Dependencies: 183
 -- Name: id_type; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -727,7 +752,7 @@ SELECT pg_catalog.setval('id_type', 1, false);
 
 
 --
--- TOC entry 2126 (class 0 OID 16703)
+-- TOC entry 2129 (class 0 OID 16703)
 -- Dependencies: 184
 -- Data for Name: individual; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -737,7 +762,7 @@ COPY individual (id_individual, id_disc, semester, theme, questions_for_individu
 
 
 --
--- TOC entry 2127 (class 0 OID 16710)
+-- TOC entry 2130 (class 0 OID 16710)
 -- Dependencies: 185
 -- Data for Name: laboratory; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -747,17 +772,19 @@ COPY laboratory (id_lab, id_disc, semester, theme, questions_for_laboratory, hou
 
 
 --
--- TOC entry 2141 (class 0 OID 16823)
+-- TOC entry 2144 (class 0 OID 16823)
 -- Dependencies: 199
 -- Data for Name: laboratory_structure; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY laboratory_structure (id, discipline_id, theme, id_type, purpose, theory, execution_order, content_structure, requirements, individual_variants, literature) FROM stdin;
+COPY laboratory_structure (id, discipline_id, theme, purpose, theory, execution_order, content_structure, requirements, individual_variants, literature, type, title) FROM stdin;
+11	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+15	2										тестова лабораторна
 \.
 
 
 --
--- TOC entry 2128 (class 0 OID 16717)
+-- TOC entry 2131 (class 0 OID 16717)
 -- Dependencies: 186
 -- Data for Name: lection; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -769,7 +796,7 @@ COPY lection (id_lect, id_disc, semester, theme, hours, literature, questions_fo
 
 
 --
--- TOC entry 2129 (class 0 OID 16724)
+-- TOC entry 2132 (class 0 OID 16724)
 -- Dependencies: 187
 -- Data for Name: literature; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -779,20 +806,22 @@ COPY literature (id) FROM stdin;
 
 
 --
--- TOC entry 2139 (class 0 OID 16812)
+-- TOC entry 2142 (class 0 OID 16812)
 -- Dependencies: 197
 -- Data for Name: menu_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY menu_items (id, menu_id, parent_id, title, url, weight) FROM stdin;
-51	50	-1	Головна	/	1
 47	46	-1	Управління Модулями	/admin/module	1
 64	46	-1	Управління Меню	/admin/menu	2
+51	50	-1	Головна	/	1
+72	69	-1	Переглянути лабораторні до дисципліни	/nmkd/lab	1
+71	69	-1	Ввести дані для створення НМКД	/nmkd/nmkd/create	1
 \.
 
 
 --
--- TOC entry 2137 (class 0 OID 16801)
+-- TOC entry 2140 (class 0 OID 16801)
 -- Dependencies: 195
 -- Data for Name: menus; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -800,11 +829,12 @@ COPY menu_items (id, menu_id, parent_id, title, url, weight) FROM stdin;
 COPY menus (id, menu_key, title) FROM stdin;
 46	admin_menu	Меню Адміністрування
 50	main_menu	Головне Меню
+69	discipline_menu	Меню дисципліни
 \.
 
 
 --
--- TOC entry 2130 (class 0 OID 16728)
+-- TOC entry 2133 (class 0 OID 16728)
 -- Dependencies: 188
 -- Data for Name: modules; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -816,7 +846,7 @@ COPY modules (id, name, state) FROM stdin;
 
 
 --
--- TOC entry 2131 (class 0 OID 16735)
+-- TOC entry 2134 (class 0 OID 16735)
 -- Dependencies: 189
 -- Data for Name: practical; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -826,7 +856,7 @@ COPY practical (id_pract, id_disc, semester, theme, questions_for_practical, hou
 
 
 --
--- TOC entry 2132 (class 0 OID 16742)
+-- TOC entry 2135 (class 0 OID 16742)
 -- Dependencies: 190
 -- Data for Name: self; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -836,7 +866,7 @@ COPY self (id_self, id_disc, semester, theme, questions_for_self, hours, literat
 
 
 --
--- TOC entry 2133 (class 0 OID 16749)
+-- TOC entry 2136 (class 0 OID 16749)
 -- Dependencies: 191
 -- Data for Name: seminary; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -846,7 +876,7 @@ COPY seminary (id_disc, semester, theme, questions_for_seminary, hours, literatu
 
 
 --
--- TOC entry 2134 (class 0 OID 16756)
+-- TOC entry 2137 (class 0 OID 16756)
 -- Dependencies: 192
 -- Data for Name: sessions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -857,7 +887,7 @@ COPY sessions (id_disc, session_data, id) FROM stdin;
 
 
 --
--- TOC entry 2135 (class 0 OID 16763)
+-- TOC entry 2138 (class 0 OID 16763)
 -- Dependencies: 193
 -- Data for Name: themes_questions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -891,23 +921,23 @@ COPY themes_questions (id_tq, name, id_discipline, id_parent, types_id, num_tq) 
 
 
 --
--- TOC entry 2136 (class 0 OID 16770)
+-- TOC entry 2139 (class 0 OID 16770)
 -- Dependencies: 194
 -- Data for Name: types; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY types (id, name) FROM stdin;
-1	lection
-2	practical
-3	seminary
-4	laboratory
-5	individual
-6	self
+COPY types (id, title) FROM stdin;
+1	Лекційне
+2	Практичне
+3	Семінарське
+4	Лабораторне
+5	Індивідуальне
+6	Самостійне
 \.
 
 
 --
--- TOC entry 2148 (class 0 OID 0)
+-- TOC entry 2152 (class 0 OID 0)
 -- Data for Name: BLOBS; Type: BLOBS; Schema: -; Owner: 
 --
 
@@ -938,7 +968,7 @@ COMMIT;
 SET search_path = public, pg_catalog;
 
 --
--- TOC entry 1976 (class 2606 OID 16777)
+-- TOC entry 1979 (class 2606 OID 16777)
 -- Name: control_work_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -947,7 +977,7 @@ ALTER TABLE ONLY control_work_type
 
 
 --
--- TOC entry 1978 (class 2606 OID 16779)
+-- TOC entry 1981 (class 2606 OID 16779)
 -- Name: discipline_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -956,7 +986,7 @@ ALTER TABLE ONLY discipline
 
 
 --
--- TOC entry 1992 (class 2606 OID 16781)
+-- TOC entry 1995 (class 2606 OID 16781)
 -- Name: id_seminary; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -965,7 +995,7 @@ ALTER TABLE ONLY seminary
 
 
 --
--- TOC entry 1980 (class 2606 OID 16783)
+-- TOC entry 1983 (class 2606 OID 16783)
 -- Name: individual_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -974,7 +1004,7 @@ ALTER TABLE ONLY individual
 
 
 --
--- TOC entry 1982 (class 2606 OID 16785)
+-- TOC entry 1985 (class 2606 OID 16785)
 -- Name: laboratory_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -983,7 +1013,7 @@ ALTER TABLE ONLY laboratory
 
 
 --
--- TOC entry 2004 (class 2606 OID 16830)
+-- TOC entry 2007 (class 2606 OID 16830)
 -- Name: laboratory_structure_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -992,7 +1022,7 @@ ALTER TABLE ONLY laboratory_structure
 
 
 --
--- TOC entry 1984 (class 2606 OID 16787)
+-- TOC entry 1987 (class 2606 OID 16787)
 -- Name: lections_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1001,7 +1031,7 @@ ALTER TABLE ONLY lection
 
 
 --
--- TOC entry 2002 (class 2606 OID 16816)
+-- TOC entry 2005 (class 2606 OID 16816)
 -- Name: menu_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1010,7 +1040,7 @@ ALTER TABLE ONLY menu_items
 
 
 --
--- TOC entry 2000 (class 2606 OID 16808)
+-- TOC entry 2003 (class 2606 OID 16808)
 -- Name: menus_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1019,7 +1049,7 @@ ALTER TABLE ONLY menus
 
 
 --
--- TOC entry 1986 (class 2606 OID 16789)
+-- TOC entry 1989 (class 2606 OID 16789)
 -- Name: modules_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1028,7 +1058,7 @@ ALTER TABLE ONLY modules
 
 
 --
--- TOC entry 1988 (class 2606 OID 16791)
+-- TOC entry 1991 (class 2606 OID 16791)
 -- Name: practical_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1037,7 +1067,7 @@ ALTER TABLE ONLY practical
 
 
 --
--- TOC entry 1990 (class 2606 OID 16793)
+-- TOC entry 1993 (class 2606 OID 16793)
 -- Name: self_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1046,7 +1076,7 @@ ALTER TABLE ONLY self
 
 
 --
--- TOC entry 1994 (class 2606 OID 16795)
+-- TOC entry 1997 (class 2606 OID 16795)
 -- Name: sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1055,7 +1085,7 @@ ALTER TABLE ONLY sessions
 
 
 --
--- TOC entry 1996 (class 2606 OID 16797)
+-- TOC entry 1999 (class 2606 OID 16797)
 -- Name: themes_questions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1064,7 +1094,7 @@ ALTER TABLE ONLY themes_questions
 
 
 --
--- TOC entry 1998 (class 2606 OID 16799)
+-- TOC entry 2001 (class 2606 OID 16799)
 -- Name: types_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1073,7 +1103,7 @@ ALTER TABLE ONLY types
 
 
 --
--- TOC entry 2155 (class 0 OID 0)
+-- TOC entry 2159 (class 0 OID 0)
 -- Dependencies: 6
 -- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
@@ -1084,7 +1114,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2015-02-09 22:49:28 EET
+-- Completed on 2015-03-10 22:57:15 EET
 
 --
 -- PostgreSQL database dump complete
