@@ -37,6 +37,10 @@ class Module extends BaseModule
         Container::register('Nmkd/TypesModel',function() {
             return new \Src\Modules\Nmkd\Models\TypesModel();
         });
+        
+        Container::register('Nmkd/NmkdModel',function() {
+            return new \Src\Modules\Nmkd\Models\NmkdModel();
+        });
     }
 
     /**

@@ -18,6 +18,13 @@ class NmkdForm extends BaseForm
         'setHierarchy',
         'setTypes',
     );
+    
+    protected $entity = 'Nmkd/NmkdModel';
+    
+    public function getEntity()
+    {
+        return Container::get($this->entity);
+    }
 
     /**
      * First step. Adding initial data.
@@ -115,13 +122,30 @@ class NmkdForm extends BaseForm
         
         $types = Container::get('Nmkd/TypesModel')->getEntityList();
         $typesArr = array();
-        foreach ($types as $row=>$values) {
+        $questionArr = array();
+        $hierarchyArr = array();
+        
+        foreach ($types as $row => $values) {
             $typesArr[$values['id']] = $values['title'];
         }
         
+        foreach ($_SESSION[$this->formName]['hierarchy'] as $hKey => $hVal) {
+            $hierarchyArr[strstr($hVal, '-', true)] = ltrim(strstr($hVal, '-'), '-');
+        }
+        
+        foreach ($_SESSION[$this->formName]['questions'] as $qKey => $question) {
+            $questionArr[$qKey]['title'] = $question;
+            if ($hierarchyArr[$qKey] == '0') {
+                $questionArr[$qKey]['no-check'] = true;
+            }
+            if ($hierarchyArr[$qKey] == '1') {
+                $questionArr[$qKey]['check-col'] = true;
+            }
+        }
+        
         $form->addElement(new Element\HTML('<legend>Оберіть типи запитань</legend>'));
-        $form->addElement(new CheckboxMatrix("Checkboxes:", "CheckboxMatrix", array(
-            'vertical' => $_SESSION[$this->formName]['questions'],
+        $form->addElement(new CheckboxMatrix("Типи:", "types", array(
+            'vertical' => $questionArr,
             'horizontal' => $typesArr
         )));
         
@@ -133,9 +157,49 @@ class NmkdForm extends BaseForm
         return $form;
     }
     
+    /**
+     * Processor for third step.
+     * 
+     * @param type $request
+     */
+    protected function setTypesProcess($request)
+    {
+        $types = array();
+        foreach ($request->request->get('types') as $key => $val) {
+            $types[$key] = $val[0];
+        }
+        $_SESSION[$this->formName]['types'] = $types;
+    }
+    
     public function submit(Request $request)
     {
+        $this->setTypesProcess($request);
+        dump($_SESSION);
+        dump($_POST);
         
+        $questions = $_SESSION[$this->formName]['questions'];
+        $typesQuestions = $_SESSION[$this->formName]['types'];
+        $typesQuestionsRes = array();
+        foreach ($typesQuestions as $key => $typeQuestion) {
+            $typeQuestionExp = explode('-', $typeQuestion);
+            $typesQuestionsRes[$typeQuestionExp[0]][] = $typeQuestionExp[1];
+        }
+        
+        $hierarchy = $_SESSION[$this->formName]['hierarchy'];
+        $hierarchyRes = array();
+        foreach ($hierarchy as $key => $pair) {
+            $pairArr = explode('-', $pair);
+            $hierarchyRes[$pairArr[0]] = $pairArr[1];
+        }
+        
+        $disciplineId = $request->query->get('id');
+        $entity = $this->getEntity();
+        $entity->createEntity($questions, $disciplineId, $typesQuestionsRes, $hierarchyRes);
+        //$vars['id'] = $id['0']['id'];
+        
+        
+        
+        die();
     }
 
 }
