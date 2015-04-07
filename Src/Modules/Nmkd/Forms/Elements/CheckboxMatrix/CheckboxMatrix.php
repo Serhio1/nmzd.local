@@ -16,7 +16,12 @@ class CheckboxMatrix extends Checkbox {
         );
     }
     
-    public function getJSFiles() {}
+    public function getJSFiles() {
+        $jsUrl = Router::buildUrl('Src/Modules/Nmkd/Forms/Elements/CheckboxMatrix/js/check_column.js');
+        return array(
+            $jsUrl
+        );
+    }
     
     public function render() { 
         if(isset($this->_attributes["value"])) {
@@ -33,41 +38,35 @@ class CheckboxMatrix extends Checkbox {
         if(!empty($this->inline))
                 $labelClass .= " inline";
 
-        $count = 0;
-        $i = 0;
-        $checkStr = '';
-        echo '<table class="checkbox-matrix table table-bordered">';
+        echo '<table class="checkbox-matrix ' . $this->_attributes["name"] . ' table table-bordered">';
         echo '<thead><tr><th></th>';
-        foreach ($this->options['horizontal'] as $horValue => $horText) {
-            echo '<th>' . $horText . '</th>'; 
+        foreach ($this->options['horizontal'] as $horKey => $horVal) {
+            echo '<th>' . $horVal . '</th>'; 
         }
         echo '</tr></thead><tbody>';
         
-        foreach ($this->options['vertical'] as $vertValue => $vertText) {
+        foreach ($this->options['vertical'] as $vertKey => $vertVal) {
             echo '<tr>';
-            echo '<td>' . $vertText . '</td>';
-            foreach ($this->options['horizontal'] as $horValue => $horText) {
-                echo '<td>' . '<input id="' . $vertValue . '-' . $horValue . '" class="check-matrix-element hide" type=checkbox><label for="' . $vertValue . '-' . $horValue . '"></label>' . '</td>'; 
+            if (empty($vertVal['no-check']) || $vertVal['no-check'] == false) {
+                echo '<td>' . $vertVal['title'] . '</td>';
+                if (!empty($vertVal['check-col']) && $vertVal['check-col'] == true) {
+                    foreach ($this->options['horizontal'] as $horKey => $horVal) {
+                        echo '<td>' . '<input id="' . $vertKey . '-' . $horKey . '" name="' . $this->_attributes["name"] . '[]" value="' . $vertKey . '-' . $horKey . '" class="check-matrix-element check-col" type=checkbox><label for="' . $vertKey . '-' . $horKey . '"></label>' . '</td>'; 
+                    }
+                } else {
+                    foreach ($this->options['horizontal'] as $horKey => $horVal) {
+                        echo '<td>' . '<input id="' . $vertKey . '-' . $horKey . '" name="' . $this->_attributes["name"] . '[]" value="' . $vertKey . '-' . $horKey . '" class="check-matrix-element hide" type=checkbox><label for="' . $vertKey . '-' . $horKey . '"></label>' . '</td>'; 
+                    }
+                }
+            } else {
+                $colspan = count($this->options['horizontal'])+1;
+                echo '<td colspan="' . $colspan . '">' . $vertVal['title'] . '</td>';
             }
-            /*while ($i < count($this->options['horizontal'])) {
-                $checkStr .= '<td></td>';
-                echo $checkStr;
-                $i++;
-            }*/
             
             echo '</tr>';
         }
         
-        echo '</tbody></table>';
-        /*foreach($this->options as $value => $text) {
-            $value = $this->getOptionValue($value);
-
-            echo '<label class="', $labelClass, '"> <input id="', $this->_attributes["id"], '-', $count, '"', $this->getAttributes(array("id", "value", "checked", "required")), ' value="', $this->filter($value), '"';
-            if(in_array($value, $this->_attributes["value"]))
-                    echo ' checked="checked"';
-            echo '/> ', $text, ' </label> ';
-            ++$count;
-        }*/	
+        echo '</tbody></table>';	
     }
 }
 

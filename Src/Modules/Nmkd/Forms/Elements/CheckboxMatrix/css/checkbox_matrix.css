@@ -14,7 +14,7 @@
     margin: 0;
 }
 
-.checkbox-matrix .check-matrix-element:checked + label {
+.checkbox-matrix .check-matrix-element.hide:checked + label {
     background-color: #DFF0D8;
     background-image: url(/Src/Modules/Nmkd/Forms/Elements/CheckboxMatrix/img/green-tick.png);
     background-position: center center;
