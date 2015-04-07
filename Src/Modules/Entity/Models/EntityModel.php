@@ -9,11 +9,21 @@ use App\Core\Router;
 class EntityModel extends Model
 {
 
+    /**
+     * Returns array of fields of current entity.
+     * 
+     * @return type
+     */
     public function getFields()
     {
         return $this->fields;
     }
 
+    /**
+     * Returns parent if entity has parent. Else returns null.
+     * 
+     * @return null
+     */
     public function getParent()
     {
         if (!empty($this->parent)) {
@@ -43,6 +53,10 @@ class EntityModel extends Model
         }
     }
 
+    /**
+     * 
+     * @return type
+     */
     public function getEntityList()
     {
         $menuData = $this->select(
@@ -53,6 +67,11 @@ class EntityModel extends Model
         return $menuData;
     }
 
+    /**
+     * 
+     * @param type $parent_id
+     * @return type
+     */
     public function getParentEntityList($parent_id)
     {
         $menuData = $this->select(
@@ -63,15 +82,23 @@ class EntityModel extends Model
         return $menuData;
     }
 
+    /**
+     * Makes SELECT query to table of this entity.
+     * 
+     * @param type $selectParams - array('id'=>1, 'title'=>'test') - return all rows, where id==1 and title=='test'
+     * @param type $columns - array('id') - return only records in 'id' column
+     * @param type $order - array('columns' => 'DESC') - column of order and type of order
+     * @return type
+     */
     public function selectEntity($selectParams, $columns = array(), $order = array('columns' => 'id', 'type' => 'DESC'))
     {
         //if (!empty($selectParams)) {
-            $menuItems = $this->select(
-                $this->table,
-                $selectParams,
-                $columns,
-                $order
-            );
+        $menuItems = $this->select(
+            $this->table,
+            $selectParams,
+            $columns,
+            $order
+        );
 
         return $menuItems;
     }
@@ -93,6 +120,12 @@ class EntityModel extends Model
         return $id;
     }
 
+    /**
+     * Makes UPDATE query to table of entity.
+     * 
+     * @param type $values
+     * @param type $selectParams
+     */
     public function updateEntity($values, $selectParams)
     {
         $this->update($this->table, $values, $selectParams);
