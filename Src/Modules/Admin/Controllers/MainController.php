@@ -43,6 +43,14 @@ class MainController extends Controller
 
         return $this->render();
     }
+    
+    public function cacheAction($request)
+    {
+        $formConf = array('action' => '');
+        $this->useForm( new \Src\Modules\Admin\Forms\CacheForm('update'), $formConf, $request, 'block3');
+
+        return $this->render();
+    }
 
     protected function preProcessView()
     {

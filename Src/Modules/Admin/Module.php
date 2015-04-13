@@ -142,152 +142,29 @@ class Module extends BaseModule
                 )
             ),
 
-            // Menu entity
-            'viewAllMenus' => array(
-                'uri' => '/menu',
-                'settings' => array(
-                    '_controller' => function (Request $request) {
-                        return $this->setAction(
-                            'Src/Modules/Admin/Controllers/MenuController',
-                            'viewAll',
-                            $request,
-                            true
-                        );
-                    }
-                )
-            ),
-            'createMenu' => array(
-                'uri' => '/menu/create',
-                'settings' => array(
-                    '_controller' => function (Request $request) {
-                        return $this->setAction(
-                            'Src/Modules/Admin/Controllers/MenuController',
-                            'create',
-                            $request,
-                            true
-                        );
-                    }
-                )
-            ),
-            'viewMenu' => array(
-                'uri' => '/menu/view',
-                'settings' => array(
-                    '_controller' => function (Request $request) {
-                        return $this->setAction(
-                            //'Src/Modules/Admin/Controllers/MenuController',
-                            'Src/Modules/Admin/Controllers/MenuItemController',
-                            'viewAll',
-                            $request,
-                            true
-                        );
-                    }
-                )
-            ),
-            'editMenu' => array(
-                'uri' => '/menu/edit',
-                'settings' => array(
-                    '_controller' => function (Request $request) {
-                        return $this->setAction(
-                            'Src/Modules/Admin/Controllers/MenuController',
-                            'edit',
-                            $request,
-                            true
-                        );
-                    }
-                )
-            ),
-            'deleteMenu' => array(
-                'uri' => '/menu/delete',
-                'settings' => array(
-                    '_controller' => function (Request $request) {
-                        return $this->setAction(
-                            'Src/Modules/Admin/Controllers/MenuController',
-                            'delete',
-                            $request,
-                            true
-                        );
-                    }
-                )
-            ),
-
-            // MenuItem Entity
-            'viewAllMenuItems' => array(
-                'uri' => '/menu',
-                'settings' => array(
-                    '_controller' => function (Request $request) {
-                        return $this->setAction(
-                            'Src/Modules/Admin/Controllers/MenuController',
-                            'viewAll',
-                            $request,
-                            true
-                        );
-                    }
-                )
-            ),
-            'createMenuItem' => array(
-                'uri' => '/menu/item/create',
-                'settings' => array(
-                    '_controller' => function (Request $request) {
-                        return $this->setAction(
-                            'Src/Modules/Admin/Controllers/MenuItemController',
-                            'create',
-                            $request,
-                            true
-                        );
-                    }
-                )
-            ),
-
-            'viewMenuItem' => array(
-                'uri' => '/menu/item/view',
-                'settings' => array(
-                    '_controller' => function (Request $request) {
-                        return $this->setAction(
-                            'Src/Modules/Admin/Controllers/MenuItemController',
-                            'view',
-                            $request,
-                            true
-                        );
-                    }
-                )
-            ),
-
-            'editMenuItem' => array(
-                'uri' => '/menu/item/edit',
-                'settings' => array(
-                    '_controller' => function (Request $request) {
-                        return $this->setAction(
-                            'Src/Modules/Admin/Controllers/MenuItemController',
-                            'edit',
-                            $request,
-                            true
-                        );
-                    }
-                )
-            ),
-
-            'deleteMenuItem' => array(
-                'uri' => '/menu/item/delete',
-                'settings' => array(
-                    '_controller' => function (Request $request) {
-                        return $this->setAction(
-                            'Src/Modules/Admin/Controllers/MenuItemController',
-                            'delete',
-                            $request,
-                            true
-                        );
-                    }
-                )
-            ),
-            
             // JMenu
-            'deleteMenuItem' => array(
+            'jmenu' => array(
                 'uri' => '/jmenu',
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/MainController',
                             'jMenu',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+                        
+            // Cache
+            'cache' => array(
+                'uri' => '/cache',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Admin/Controllers/MainController',
+                            'cache',
                             $request,
                             true
                         );

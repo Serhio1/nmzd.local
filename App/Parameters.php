@@ -56,7 +56,7 @@ class Parameters
     
     public function getCacheDir()
     {
-        return $this->getBasePath() . '/cache';
+        return $this->getBasePath() . '/Cache';
     }
 
     public function getThemeData()

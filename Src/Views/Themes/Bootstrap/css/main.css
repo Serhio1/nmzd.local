@@ -558,3 +558,9 @@ textarea,
     padding-left: 1% !important;
     padding-right: 1% !important;
 }
+
+.menu-title {
+    padding: 10px;
+    background: none repeat scroll 0% 0% rgb(238, 238, 238);
+    border-radius: 5px;
+}

@@ -8,6 +8,7 @@ use App\Core\Router;
 use App\Parameters;
 use \Twig_Loader_Filesystem;
 use \Twig_Environment;
+use App\Patches\Nmzd_Twig_Environment;
 
 
 class Services
@@ -15,16 +16,6 @@ class Services
 
     public static function registerServices()
     {
-        Container::register('session_storage',function(){
-            return new SessionStorage();
-        });
-
-        Container::register('form_mngr',function(){
-            $formManager = new FormManager();
-            $formManager->getForms(new Forms());
-            return $formManager;
-        });
-
         Container::register('form_generator',function(){
             require_once 'vendor/php-form-generator/fg/load.php';
 
@@ -52,12 +43,14 @@ class Services
             $loader = new Twig_Loader_Filesystem(Container::get('params')
                 ->getViewDir());
 
-            if (Container::get('params')->cache) {
-                return new Twig_Environment($loader, array(
+            $cacheConfJson = file_get_contents(Container::get('params')->getConfigDir() . '/' . 'cache.json');
+            $cacheConf = json_decode($cacheConfJson, true);
+            if ($cacheConf['enable_cache']) {
+                return new Nmzd_Twig_Environment($loader, array(
                     'cache' => Container::get('params')->getCacheDir(),
                 ));
             } else {
-                return new Twig_Environment($loader);
+                return new Nmzd_Twig_Environment($loader);
             }
         });
 
