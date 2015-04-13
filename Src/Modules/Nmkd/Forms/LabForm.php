@@ -58,31 +58,31 @@ class LabForm extends EntityForm
                     'required' => 1,
                     'value' => empty($values['title']) ? '' : $values['title'],
                 )));
-                $form->addElement(new Element\CKEditor('Тема:', 'theme', array(
+                $form->addElement(new Element\Textarea('Тема:', 'theme', array(
                     'value' => $values['theme']
                 )));
-                $form->addElement(new Element\CKEditor('Вид заняття:', 'type', array(
+                $form->addElement(new Element\Textarea('Вид заняття:', 'type', array(
                     'value' => $values['type']
                 )));
-                $form->addElement(new Element\CKEditor('Мета:', 'purpose', array(
+                $form->addElement(new Element\Textarea('Мета:', 'purpose', array(
                     'value' => $values['purpose']
                 )));
-                $form->addElement(new Element\CKEditor('Теоретичний матеріал:', 'theory', array(
+                $form->addElement(new Element\Textarea('Теоретичний матеріал:', 'theory', array(
                     'value' => $values['theory']
                 )));
-                $form->addElement(new Element\CKEditor('Порядок виконання:', 'execution_order', array(
+                $form->addElement(new Element\Textarea('Порядок виконання:', 'execution_order', array(
                     'value' => $values['execution_order']
                 )));
-                $form->addElement(new Element\CKEditor('Структура змісту текстових розділів звітних матеріалів:', 'content_structure', array(
+                $form->addElement(new Element\Textarea('Структура змісту текстових розділів звітних матеріалів:', 'content_structure', array(
                     'value' => $values['content_structure']
                 )));
-                $form->addElement(new Element\CKEditor('Вимоги до оформлення роботи та опис процедури її захисту:', 'requirements', array(
+                $form->addElement(new Element\Textarea('Вимоги до оформлення роботи та опис процедури її захисту:', 'requirements', array(
                     'value' => $values['requirements']
                 )));
-                $form->addElement(new Element\CKEditor('Варіанти індивідуальних завдань:', 'individual_variants', array(
+                $form->addElement(new Element\Textarea('Варіанти індивідуальних завдань:', 'individual_variants', array(
                     'value' => $values['individual_variants']
                 )));
-                $form->addElement(new Element\CKEditor('Рекомендована література:', 'literature', array(
+                $form->addElement(new Element\Textarea('Рекомендована література:', 'literature', array(
                     'value' => $values['literature']
                 )));
             }
@@ -111,23 +111,30 @@ class LabForm extends EntityForm
             $params[$field] = $request->request->get($field);
         }
         if ($this->operation == 'create') {
-            $vars['parent_id'] = $id;
+            $parent = Container::get($this->entity)->getParent();
+            if (!empty($parent)) {
+                $vars['parent_id'] = $request->query->get('id');
+            }
         } else {
             $parent = Container::get($this->entity)->getParent();
             if (!empty($parent)) {
                 $parentId = Container::get($this->entity)->getParentId($id);
-                $vars['parent_id'] = $parentId['0'][$parent . '_id'];
+                $vars['parent_id'] = $parentId[0][$parent . '_id'];
             }
         }
         if ($this->operation == 'create') {
             $id = $entity->createEntity($params);
-            $vars['id'] = $id['0']['id'];
+            
+            //$_SESSION[$this->formName]['action'] = $id['0']['id'];
+            //$vars['id'] = $id['0']['id'];
         }
         if ($this->operation == 'update') {
             $entity->updateEntity($params, array('id' => $id));
+            //$vars['parent_id'] = $entity->getParentId($id);
         }
         if ($this->operation == 'delete') {
             $entity->deleteEntity(array('id' => $id));
+            //$vars['parent_id'] = $entity->getParentId($id);
         }
 
         $step = $request->request->get('step');
@@ -139,7 +146,10 @@ class LabForm extends EntityForm
     
     protected function finishEvent($vars = array())
     {
-        Container::get('router')->redirect($_SESSION[$this->formName]['action'] . '?id=' . $vars['parent_id']);
+        if (!empty($vars['parent_id'])) {
+            Container::get('router')->redirect(explode('?' ,$_SESSION[$this->formName]['action'])[0] . '?id=' . $vars['parent_id']);
+        }
+        Container::get('router')->redirect($_SESSION[$this->formName]['action'] /*. '?id=' . $vars['parent_id']*/);
     }
 
 }

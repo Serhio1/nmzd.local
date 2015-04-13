@@ -2,48 +2,18 @@
 
 namespace App;
 
-use Src\Modules\Admin\Models\AdminModel;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use src\controllers\MainController;
 use App\Core\Container;
 
 class Routes
 {
-    public $routes = array(
-    //regexp => controller/action 
-    
-    //userControler
-        'user/register' => 'user/register',
-        'user/login' => 'user/login',
-        'user' => 'user/index',
-    
-    //nmkdController
-        'nmkd/input' => 'nmkd/input',
-        'input' => 'nmkd/index',
-        'nmkd/set-hierarchy' => 'nmkd/setHierarchy',
-        'nmkd/set-types' => 'nmkd/setTypes',
-        'questions-themes' => 'nmkd/questionsToThemes',
-        /*'set-themes' => 'nmkd/setThemes',
-        'set-modules' => 'nmkd/setModules',*/
-        'themes-modules' => 'nmkd/themesToModules',
-        'save-session' => 'nmkd/saveSession',
-        'restore-session' => 'nmkd/restoreSession',
-        'nmkd/edit' => 'nmkd/editNmkd',
-        'nmkd/download-pdf' => 'nmkd/downloadPdf',
-        'nmkd/download-pdffromstr' => 'nmkd/downloadPdfFromStr',
-        'questions-upload' => 'nmkd/uploadQuestions',
-        
-        
-    //mainController
-        '' => 'main/index',     //route with empty regexp must stand at last
-    );
-
     public static function getModules()
     {
-        return Container::get('Main/ModuleModel')->getModulesForRouting();
+        $modulesConfJson = file_get_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json');
+        $modulesConf = json_decode($modulesConfJson, true);
+        return $modulesConf;
     }
 
     /**

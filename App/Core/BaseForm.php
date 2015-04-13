@@ -48,10 +48,10 @@ class BaseForm
         $config['action'] = '';
         
         if ($request->request->get('step') == 'finish') { 
-            //$config['action'] = $_SESSION[$this->formName]['action'];
-            if (!empty($_SERVER["QUERY_STRING"])) {
+            $config['action'] = $_SESSION[$this->formName]['action'];
+            /*if (!empty($_SERVER["QUERY_STRING"])) {
                 $config['action'] .= '?' . $_SERVER["QUERY_STRING"];
-            }
+            }*/
             $this->submit($request);
             $this->finishEvent();
         }

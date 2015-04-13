@@ -18,6 +18,19 @@ class MenuModel extends EntityModel
 
     public function getMenu($menuKey)
     {
+        
+        $menusConfJson = file_get_contents(Container::get('params')->getConfigDir() . '/' . 'menus.json');
+        $menusConf = json_decode($menusConfJson, true);
+        
+        $menu = array();
+        foreach ($menusConf['rows'] as $key => $row) {
+            if (!empty($row['text_id']) && $row['text_id'] == $menuKey) {
+                $menu = $row;
+            }
+        }
+        
+        return $menu;
+        
         $menuData = $this->select(
             $this->table,
             array('menu_key' => $menuKey),

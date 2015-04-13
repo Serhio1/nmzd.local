@@ -53,10 +53,12 @@ class Hierarchy extends Sort {
         echo '<ul id="', $this->_attributes["id"], '">';
         foreach($this->options['content'] as $value => $text) {
             $value = $this->getOptionValue($value);
-            if (!empty($this->options['default'])) {
-                echo '<li class="hierarchy-element"><input type="hidden" name="', $this->_attributes["name"], '" value="', $value, '-' . array_search($this->options['default'], $this->options['groups']) . '"/><span class="header">' . $this->options['default'] . '</span><span class="content">', $text, '</span></li>';
+            if (isset($this->options['value'][$value])) {
+                echo '<li class="hierarchy-element"><input type="hidden" name="'. $this->_attributes["name"]. '" value="' . $value. '-' . $this->options['value'][$value] . '"/><span class="header">' . $this->options['groups'][$this->options['value'][$value]] . '</span><span class="content">'. $text. '</span></li>';
+            } elseif (!empty($this->options['default'])) {
+                echo '<li class="hierarchy-element"><input type="hidden" name="'. $this->_attributes["name"]. '" value="'. $value. '-' . array_search($this->options['default'], $this->options['groups']) . '"/><span class="header">' . $this->options['default'] . '</span><span class="content">'. $text. '</span></li>';
             } else {
-                echo '<li class="hierarchy-element"><input type="hidden" name="', $this->_attributes["name"], '" value="', $value, '-"/><span class="header"></span><span class="content">', $text, '</span></li>';
+                echo '<li class="hierarchy-element"><input type="hidden" name="'. $this->_attributes["name"]. '" value="'. $value. '-"/><span class="header"></span><span class="content">'. $text. '</span></li>';
             }
             
         }

@@ -10,107 +10,179 @@ class NmkdModel extends Model
 {
     private $tqForTypes = array();
     
+    /**
+     * Creates new Nmkd.
+     * 
+     * @param type $questions - array('question1', 'question2' ...).
+     * @param type $disciplineId - integer, id of current discipline.
+     * @param type $typesQuestions - array(question_key => type_id). question_key - key from $questions element.
+     * @param type $hierarchy - array(question_key => hierarchy_position). hierarchy_position - 2 value of hierarchy PFBC element
+     */
     public function createEntity($questions, $disciplineId, $typesQuestions, $hierarchy)
     {
         $idTypes = Container::get('Nmkd/TypesModel')
-        ->selectEntity(array(), array('id'), $order = array('columns' => 'id', 'type' => 'ASC'));
+        ->selectEntity(array(), array('id', 'key'), array('columns' => 'id', 'type' => 'ASC'));
         
-        /*foreach ($idTypes as $row => $idType) {
-            $idType
-        }*/
+        $query = self::getDb()->prepare(
+                            "INSERT INTO 
+                                 themes_questions
+                                 (name, id_discipline, id_parent, types_id, num_tq)
+                             VALUES 
+                                 (:name, :id_disc, :id_parent, :types_id, :num_tq) 
+                             RETURNING id_tq");
         
-        $this->setThemesQuestions($questions, $disciplineId, $typesQuestions, $idTypes, $hierarchy);
-        
-        return true;
-    }
-
-    /**
-     * Main function. Called after nmkd creation flow.
-     *
-     * @throws Exception
-     */
-    public function setAll()
-    {
-        $questions = Container::get('session_storage')->get('questions');
-        $disciplineId = Container::get('session_storage')->get('discipline');
-        $hierarchy = Container::get('session_storage')->get('hierarchy');
-        $typesQuestions = Container::get('session_storage')->get('typesQuestions');
-        
-        $semester = 1;
-        $idTypes = $this->getTypes();
-        $this->setThemesQuestions($questions, $disciplineId, $typesQuestions, $idTypes);
-        $lastLoadedQuestions = $this->getLastLoadedQuestions($questions);
-        $this->updateThemesQuestions($lastLoadedQuestions, $questions, $hierarchy);
-        $this->setTypes($lastLoadedQuestions, $questions, $hierarchy ,$idTypes, $disciplineId, $semester, $typesQuestions);
-    
-    }
-
-    /**
-     * @param $questions
-     * @param $disciplineId
-     * @param $typesQuestions
-     * @param $idTypes
-     */
-    protected function setThemesQuestions($questions, $disciplineId, $typesQuestions, $idTypes, $hierarchy)
-    {
-        $TQQuery = self::$db->prepare(
-                            "INSERT INTO themes_questions(name, id_discipline, types_id)
-                             VALUES (:name, :id_disc, :types_id) RETURNING id_tq");
+        $TQIds = array();
+        $TQNames = array();
         foreach ($questions as $key=>$name) {
             $typesArr = array();
-            $TQQuery->bindValue(':name', $name);
-            $TQQuery->bindValue(':id_disc', $disciplineId);
+            $query->bindValue(':name', $name);
+            $query->bindValue(':id_disc', $disciplineId);
+            $query->bindValue(':num_tq', $key);
             if ($hierarchy[$key] == 0) {
-                $TQQuery->bindValue(':types_id', '{'.implode(',', $typesArr).'}');
-                $TQQuery->execute();
-                $moduleQId = $TQQuery->fetchAll(PDO::FETCH_ASSOC);
+                $query->bindValue(':id_parent', -1);
+                $query->bindValue(':types_id', '{}');
+                $query->execute();
+                $MQId = $query->fetchAll(PDO::FETCH_ASSOC);
+                continue;
             }
-            if (isset($typesQuestions[$key])) {
-                $typesArr = $typesQuestions[$key];
+            elseif ($hierarchy[$key] == 1) {
+                $query->bindValue(':id_parent', $MQId[0]['id_tq']);
+                $query->bindValue(':types_id', '{}');
+                
+                $query->execute();
+                $TQNames[] = $name;
+                $TQIds[] = $query->fetchAll(PDO::FETCH_ASSOC);
+                continue;
             }
-            $TQQuery->bindValue(':types_id', '{'.implode(',', $typesArr).'}');
-            $TQQuery->execute();
+            else {
+                $typesArr = array();
+                if (isset($typesQuestions[$key])) {
+                    $typesArr = $typesQuestions[$key];
+                }
+                $query->bindValue(':id_parent', $TQIds[count($TQIds)-1][0]['id_tq']);
+                $query->bindValue(':types_id', '{'.implode(',', $typesArr).'}');
+                
+                $query->execute();
+                $TQIds[count($TQIds)-1][0]['q_ids'][] = $query->fetchAll(PDO::FETCH_ASSOC);
+            }
         }
-
+        foreach ($idTypes as $typeRow) {
+            
+            $typesQuery = self::getDb()->prepare(
+                            "INSERT INTO " . $typeRow['key'] . "(id_disc, semester, theme, questions, id_theme)
+                             VALUES (:id_disc, :semester, :theme, :questions, :id_theme)");
+            
+            foreach ($TQNames as $key => $themeName) {
+                $questionsArr = array();
+                foreach ($TQIds[$key][0]['q_ids'] as $qRow => $qVal) {
+                    $questionsArr[] = $qVal[0]['id_tq'];
+                }
+                $typesQuery->bindValue(':id_disc', $disciplineId);
+                $typesQuery->bindValue(':semester', 1);
+                $typesQuery->bindValue(':theme', $themeName);
+                $typesQuery->bindValue(':questions', '{'.implode(',', $questionsArr).'}');
+                $typesQuery->bindValue(':id_theme', $TQIds[$key][0]['id_tq']);
+                $typesQuery->execute();
+            }
+        }
     }
+    
+    public function selectEntity($disciplineId)
+    {
+        return $this->select('themes_questions', array('id_discipline'=>$disciplineId));
+    }
+    
+    public function selectQuestionHierarchy($disciplineId)
+    {
+        $mQuestions = $this->select('themes_questions', 
+                array('id_discipline'=>$disciplineId), 
+                array('id_tq', 'id_parent', 'num_tq'), 
+                array('columns'=>'num_tq', 'type'=>'ASC'));
+        $res = array();
+        $mId = 0;
+        foreach ($mQuestions as $row => $question) {
+            if ($question['id_parent'] == '-1') {
+                $res[$question['num_tq']] = 0;
+                $mId = $question['id_tq'];
+            } elseif ($question['id_parent'] == $mId) {
+                $res[$question['num_tq']] = 1;
+            } else {
+                $res[$question['num_tq']] = 2;
+            }
+        }
+   
+        return $res;
+    }
+    
+    public function selectTypes($disciplineId)
+    {
+        $query = static::getDb()->prepare(
+                            "SELECT 
+                                types_id, 
+                                num_tq 
+                             FROM 
+                                 themes_questions
+                             WHERE 
+                                 id_discipline = :id_disc 
+                             AND 
+                                 types_id != '{}'
+                             ORDER BY num_tq ASC");
+
+        $query->bindValue(':id_disc', $disciplineId);
+        $query->execute();
+        $res = $query->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($res as $row => $data) {
+            $res[$row]['types_id'] = $this->pgArrayParse($data['types_id']);
+        }
+   
+        return $res;
+    }
+
+    /**
+     * Deletes current questions for discipline and set new questions.
+     * 
+     * @param type $questions
+     * @param type $disciplineId
+     * @param type $typesQuestions
+     * @param type $hierarchy
+     */
+    public function updateEntity($questions, $disciplineId, $typesQuestions, $hierarchy)
+    {
+        self::getDB()->beginTransaction();
+        $types = Container::get('Nmkd/TypesModel')
+        ->selectEntity(array(), array('key'), array());
+        
+        $deleteTQQuery = self::getDb()->prepare("DELETE FROM themes_questions WHERE id_discipline = :id_disc");
+        $deleteTQQuery->bindValue(':id_disc', $disciplineId);
+        $deleteTQQuery->execute();
+        
+        foreach ($types as $type) {
+            $deleteTypeQuery = self::getDb()->prepare("DELETE FROM $type[key] WHERE id_disc = :id_disc");
+            $deleteTypeQuery->bindValue(':id_disc', $disciplineId);
+            $deleteTypeQuery->execute();
+        }
+        $this->createEntity($questions, $disciplineId, $typesQuestions, $hierarchy);
+        self::getDB()->commit();
+    }
+
+
 
     public function getDisciplines()
     {
-        $discQuery = self::$db->prepare("SELECT id,name FROM discipline");
-        self::$db->beginTransaction();
-            $discQuery->execute();
-        self::$db->commit();
+        $discQuery = self::getDb()->prepare("SELECT id,name FROM discipline");
+        $discQuery->execute();
         $res = $discQuery->fetchAll(PDO::FETCH_ASSOC);
         
         return $res;
     }
 
-    /**
-     * Returns true if nmkd for discipline exists (false if not exists).
-     *
-     * @param $idDiscipline
-     * @return boolean
-     */
-    public function nmkdExist($idDiscipline)
-    {
-        $query = self::$db->prepare("SELECT COUNT(*) FROM themes_questions WHERE id_discipline = :id_discipline");
-        $query->bindValue(':id_discipline', $idDiscipline);
-        $query->execute();
-
-        $res = $query->fetchAll(PDO::FETCH_ASSOC);
-        if (!empty($res)) {
-            return true;
-        }
-        return false;
-    }
-
     protected function updateThemesQuestions($lastLoadedQuestions, $questions, $hierarchy)
     {
-        $themesQuestionsQuery = self::$db->prepare("UPDATE themes_questions
+        $themesQuestionsQuery = self::getDb()->prepare("UPDATE themes_questions
                                                     SET id_parent = :id_parent,
                                                         num_tq = :num_tq
                                                     WHERE id_tq=:id");
-        self::$db->beginTransaction();
+        self::getDb()->beginTransaction();
             $hierarchyVals = array_values($hierarchy);
             $hierarchyKeys = array_keys($hierarchy);
             for ($i=0; $i<count($questions); $i++) {
@@ -142,7 +214,7 @@ class NmkdModel extends Model
                 $themesQuestionsQuery->bindValue(':num_tq', $i);
                 $themesQuestionsQuery->execute();
             }
-        self::$db->commit();
+        self::getDb()->commit();
     }
 
     protected function setTypes($lastLoadedQuestions, $questions, $hierarchy, $idTypes, $disciplineId, $semester, $typesQuestions)
@@ -151,7 +223,7 @@ class NmkdModel extends Model
         foreach ($idTypes as $id=>$type) {
             $questionsForTypeStr = 'questions_for_'.$type;
 
-            $insertTypeQuery = self::$db->prepare("INSERT INTO $type(theme, id_theme, semester, id_disc, $questionsForTypeStr)
+            $insertTypeQuery = self::getDb()->prepare("INSERT INTO $type(theme, id_theme, semester, id_disc, $questionsForTypeStr)
                                                    VALUES (:theme, :id_theme, :semester, :id_disc, :questions_for_type)");
 
 
@@ -195,7 +267,7 @@ class NmkdModel extends Model
 
     public function setTQTypes($lastLoadedQuestions, $questions, $typesQuestions, $idTypes)
     {
-        $addTypeToQuestionQuery = self::$db->prepare("UPDATE themes_questions
+        $addTypeToQuestionQuery = self::getDb()->prepare("UPDATE themes_questions
                                                      SET types_id = :types_id
                                                      WHERE id_tq = :id_tq");
 

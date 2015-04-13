@@ -10,8 +10,8 @@ class TypesModel extends EntityModel
     protected $table = 'types';
 
     protected $fields = array(
-        'id',
-        'title'
+        'title',
+        'key'
     );
 
 }

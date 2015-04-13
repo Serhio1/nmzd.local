@@ -55,7 +55,16 @@ class CheckboxMatrix extends Checkbox {
                     }
                 } else {
                     foreach ($this->options['horizontal'] as $horKey => $horVal) {
-                        echo '<td>' . '<input id="' . $vertKey . '-' . $horKey . '" name="' . $this->_attributes["name"] . '[]" value="' . $vertKey . '-' . $horKey . '" class="check-matrix-element hide" type=checkbox><label for="' . $vertKey . '-' . $horKey . '"></label>' . '</td>'; 
+                        if (!empty($this->options['value'][$vertKey])) {
+                            if (array_search($horKey, $this->options['value'][$vertKey]) !== false) {
+                                echo '<td>' . '<input id="' . $vertKey . '-' . $horKey . '" name="' . $this->_attributes["name"] . '[]" value="' . $vertKey . '-' . $horKey . '" class="check-matrix-element hide" type=checkbox checked="checked"><label for="' . $vertKey . '-' . $horKey . '"></label>' . '</td>'; 
+                            } else {
+                                echo '<td>' . '<input id="' . $vertKey . '-' . $horKey . '" name="' . $this->_attributes["name"] . '[]" value="' . $vertKey . '-' . $horKey . '" class="check-matrix-element hide" type=checkbox><label for="' . $vertKey . '-' . $horKey . '"></label>' . '</td>'; 
+                            }
+                        } else {
+                            echo '<td>' . '<input id="' . $vertKey . '-' . $horKey . '" name="' . $this->_attributes["name"] . '[]" value="' . $vertKey . '-' . $horKey . '" class="check-matrix-element hide" type=checkbox><label for="' . $vertKey . '-' . $horKey . '"></label>' . '</td>'; 
+                        }
+                        
                     }
                 }
             } else {

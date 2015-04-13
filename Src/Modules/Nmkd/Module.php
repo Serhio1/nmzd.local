@@ -86,6 +86,18 @@ class Module extends BaseModule
                     }
                 )
             ),
+            'editNmkd' => array(
+                'uri' => '/nmkd/edit',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Nmkd/Controllers/NmkdController',
+                            'edit',
+                            $request
+                        );
+                    }
+                )
+            ),
             // Discipline entity
             'viewAllDiscipline' => array(
                 'uri' => '/discipline',

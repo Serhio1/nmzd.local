@@ -12,7 +12,7 @@ class Parameters
     public $dbName = 'nmzd';
     public $dbChar = 'utf8';
     
-    public $adminPassword = 'fB3hiU9'; 
+    public $adminPassword = '21232f297a57a5a743894a0e4a801fc3'; 
 
     public $cache = false;
 
@@ -29,7 +29,6 @@ class Parameters
     private function __construct(){}
 
     private function __clone(){}
-
 
     public static function getInstance()
     {
@@ -99,6 +98,11 @@ class Parameters
         if (isset($this->menus[$name])) {
             return $this->menus[$name];
         }
+    }
+    
+    public function getConfigDir()
+    {
+        return 'App/Config';
     }
 //------------------------------------
     public function getPdfDir()

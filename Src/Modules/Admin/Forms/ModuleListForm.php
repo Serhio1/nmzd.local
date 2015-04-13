@@ -10,6 +10,7 @@ use \PFBC\View;
 use Symfony\Component\HttpFoundation\Request;
 use Src\Modules\Admin\Models\AdminModel;
 use App\Core\Container;
+use App\Core\Router;
 
 class ModuleListForm extends BaseForm
 {
@@ -21,16 +22,8 @@ class ModuleListForm extends BaseForm
 
     protected function formProcess($form, $request, $config)
     {
-
-        $model = Container::get('Main/ModuleModel');
-        $modules = $model->getModules();
-
-        /*if (!empty($config['view'])) {
-            $view = '\\PFBC\\View\\' . ucfirst($config['view']);
-            $config['view'] = new $view;
-        }
-
-        $config = array_merge($config, array("prevent" => array("bootstrap", "jQuery")));*/
+        $modulesConfJson = file_get_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json');
+        $modulesConf = json_decode($modulesConfJson);
 
         $form->configure($config);
 
@@ -40,12 +33,14 @@ class ModuleListForm extends BaseForm
         $options = array();
         $hidden = array();
         $enabledModules = array();
-        foreach ($modules as $module) {
-            $options[$module['id']] = $module['name'];
-            if ($module['state']) {
-                $enabledModules[$module['id']] = $module['id'];
+        
+        foreach ($modulesConf as $name => $state) {
+            $options[$name] = $name;
+            if ($state) {
+                $enabledModules[$name] = $name;
             }
         }
+        
         $form->addElement(new Element\Checkbox("Modules", "Modules", $options, array(
             "value" => $enabledModules,
             "class" => $hidden
@@ -65,22 +60,15 @@ class ModuleListForm extends BaseForm
 
     public function submit(Request $request)
     {
-        $currentModules = $request->request->get('Modules');
-        $model = Container::get('Main/ModuleModel');
-        $modules = $model->getModules();
-
-        $res = array();
-        foreach ($modules as $row) {
-            if (in_array($row['id'], $currentModules)) {
-                $res[$row['id']] =  1;
-                $moduleStr = 'Src\\Modules\\' . ucfirst($row['name']) . '\\Module';
-                $module = new $moduleStr;
-                $module->install();
-            } else {
-                $res[$row['id']] =  0;
-            }
+        $requestedModules = $request->request->get('Modules');
+        $modulesConfJson = file_get_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json');
+        $modulesConf = json_decode($modulesConfJson, true);
+        $modulesConf = array_fill_keys(array_keys($modulesConf), false);
+        foreach ($requestedModules as $key => $mName) {
+            $modulesConf[$mName] = true;
         }
-        $model->setModuleStateMultiple($res);
+        file_put_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json', json_encode($modulesConf));
+        Container::get('router')->redirect('/admin');
     }
 
 

@@ -10,12 +10,12 @@ class Model
 
     public static function getDb()
     {
-        if (!isset(self::$db)) {
+        if (!isset(static::$db)) {
             static::$db = new static;
+            static::initDbConnection();
         }
-        static::initDbConnection();
 
-        return self::$db;
+        return static::$db;
     }
 
     private static function initDbConnection()
@@ -46,11 +46,16 @@ class Model
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    protected function selectIn($table, $coloumn, $array)
+    protected function selectIn($table, $coloumn, $array, $columns=array())
     {
         $qMarks = str_repeat('?,', count($array)-1).'?';
+        if (!empty($columns)) {
+            $columnsStr = implode(',', $columns);
+        } else {
+            $columnsStr = '*';
+        }
 
-        $selectQuery = self::getDb()->prepare("SELECT * FROM $table WHERE $coloumn IN ($qMarks)");
+        $selectQuery = self::getDb()->prepare("SELECT $columnsStr FROM $table WHERE $coloumn IN ($qMarks)");
         $selectQuery->execute($array);
 
         return $selectQuery->fetchAll(PDO::FETCH_ASSOC);
@@ -174,6 +179,19 @@ class Model
         }
 
         return $selectStr;
+    }
+    
+    protected function pgArrayParse($literal)
+    {
+        if ($literal == '') {
+            return;
+        }
+        preg_match_all('/(?<=^\{|,)(([^,"{]*)|\s*"((?:[^"\\\\]|\\\\(?:.|[0-9]+|x[0-9a-f]+))*)"\s*)(,|(?<!^\{)(?=\}$))/i', $literal, $matches, PREG_SET_ORDER);
+        $values = [];
+        foreach ($matches as $match) {
+            $values[] = $match[3] != '' ? stripcslashes($match[3]) : (strtolower($match[2]) == 'null' ? null : $match[2]);
+        }
+        return $values;
     }
 
 }

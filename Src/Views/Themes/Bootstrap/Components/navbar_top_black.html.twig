@@ -3,7 +3,7 @@
         <div class="container-fluid">
         <a class="brand" href="#">{{ brand }}</a>
         <ul class="nav">
-            {% for id, params in list %}
+            {% for id, params in list.children %}
                 <li class="{% if params.url == current_url %}active{% endif %}"><a href="{{ params.url }}">{{ params.title }}</a></li>
             {% endfor %}
         </ul>

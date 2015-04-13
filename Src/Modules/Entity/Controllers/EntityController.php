@@ -54,11 +54,13 @@ class EntityController extends Controller
                             'view' => '/Src/Views/Themes/Bootstrap/Components/horizontal_pills.html.twig',
                             'vars' => array(
                                 'list' => array(
-                                    'top_entity_menu' => array(
-                                        'title' => 'Створити',
-                                        'url' => (empty($parent)) ?
+                                    'children' => array(
+                                        array(
+                                            'title' => 'Створити',
+                                            'url' => (empty($parent)) ?
                                             Router::buildUrl($this->entityUrl . '/create') :
                                             Router::buildUrl($this->entityUrl . '/create', array('id' => $request->query->get('id'))),
+                                        )
                                     ),
                                 )
                             ),

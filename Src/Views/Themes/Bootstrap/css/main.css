@@ -213,10 +213,6 @@ li.unmarked {
     border: 1px solid #fff;
 }
 
-.fixedTable tr td {
-    #width: auto;
-}
-
 #questions_to_themes {
     width: 100%;
 }
@@ -273,7 +269,9 @@ li.unmarked {
 min-height: 100%;
 }
 
-
+#push {
+    height: 70px;
+}
 
 footer
 {

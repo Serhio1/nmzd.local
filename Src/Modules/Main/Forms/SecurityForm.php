@@ -39,7 +39,7 @@ class SecurityForm extends BaseForm
     public function submit(Request $request)
     {
         if ($this->operation == 'check_password') {
-            if ($request->request->get('password') == Container::get('params')->adminPassword) {
+            if (md5($request->request->get('password')) == Container::get('params')->adminPassword) {
                 $_SESSION['security_access'] = true;
             }
         }

@@ -1,6 +1,6 @@
 {# dependencies: Bootstrap 2.3 #}
 <ul class="nav nav-pills">
-    {% for id, params in list %}
+    {% for id, params in list.children %}
         <li class="{% if params.url == current_url %}active{% endif %}"><a href="{{ params.url }}">{{ params.title }}</a></li>
     {% endfor %}
 </ul>

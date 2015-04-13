@@ -13,9 +13,6 @@ class MainController extends Controller
 {
     public function indexAction(Request $request)
     {
-        Container::get('dispatcher')
-            ->dispatch('Src/Modules/Admin/Controllers/MainController:indexAction');
-        
         $disciplines = Container::get('Nmkd/DisciplineModel')->selectEntity(array(), array('id','title'));
         foreach ($disciplines as $key => $value) {
             $disciplines[$key]['url'] = Router::buildUrl('nmkd/discipline/menu', array('id' => $disciplines[$key]['id']));
@@ -40,7 +37,7 @@ class MainController extends Controller
                         'nmkd_menu' => array(
                             'view' => '/Src/Views/Themes/Bootstrap/Components/nav_vertical_pills.html.twig',
                             'vars' => array(
-                                'list' => $disciplines,
+                                'list' => array('children' => $disciplines),
                                 'brand' => 'НМЗД',
                             )
                         )

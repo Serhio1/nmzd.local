@@ -23,6 +23,15 @@ class NmkdController extends Controller
         
         return $this->render();
     }
+    
+     public function editAction(Request $request)
+    {
+        $formConf = array('action' => $this->entityUrl);
+        $this->useForm(new $this->form('update'), $formConf, $request, $this->block);
+
+        
+        return $this->render();
+    }
 
 }
 

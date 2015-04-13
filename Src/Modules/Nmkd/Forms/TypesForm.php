@@ -34,6 +34,10 @@ class TypesForm extends EntityForm
                 'required' => 1,
                 'value' => empty($values['title']) ? '' : $values['title'],
             )));
+            $form->addElement(new Element\Textbox('Ключ:', 'key', array(
+                'required' => 1,
+                'value' => empty($values['key']) ? '' : $values['key'],
+            )));
             $form->addElement(new Element\Button('Відмінити', 'button', array(
                 'onclick' => 'history.go(-1);'
             )));

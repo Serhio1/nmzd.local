@@ -15,14 +15,6 @@ class Services
 
     public static function registerServices()
     {
-        /*Container::register('router',function(){
-            $routes = new Routes();
-            $router = new Router();
-            $router->setRoutes($routes->routes);
-
-            return $router;
-        });*/
-        
         Container::register('session_storage',function(){
             return new SessionStorage();
         });
@@ -86,20 +78,8 @@ class Services
             return $themeSettings;
         });
 
-        /*Container::register('Admin/AdminModel',function() {
-            return new \Src\Modules\Admin\Models\AdminModel();
-        });*/
-
         Container::register('router', function() {
             return new \App\Core\Router();
-        });
-
-        Container::register('Main/ModuleModel',function() {
-            return new \Src\Modules\Main\Models\ModuleModel();
-        });
-
-        Container::register('dispatcher',function() {
-            return Dispatcher::getInstance();
         });
 
     }

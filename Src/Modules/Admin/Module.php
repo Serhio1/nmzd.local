@@ -77,12 +77,12 @@ class Module extends BaseModule
 
             // Module entity
             'viewAllModules' => array(
-                'uri' => '/module',
+                'uri' => '/modules',
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Admin/Controllers/ModuleController',
-                            'viewAll',
+                            'Src/Modules/Admin/Controllers/MainController',
+                            'modules',
                             $request,
                             true
                         );
@@ -273,6 +273,21 @@ class Module extends BaseModule
                         return $this->setAction(
                             'Src/Modules/Admin/Controllers/MenuItemController',
                             'delete',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+            
+            // JMenu
+            'deleteMenuItem' => array(
+                'uri' => '/jmenu',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Admin/Controllers/MainController',
+                            'jMenu',
                             $request,
                             true
                         );

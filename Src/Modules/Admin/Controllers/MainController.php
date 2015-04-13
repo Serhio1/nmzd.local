@@ -19,7 +19,6 @@ class MainController extends Controller
 
     public function indexAction($request)
     {
-        Container::get('dispatcher')->dispatch('\Src\Modules\Admin\Controllers\MainController:indexAction');
         return $this->render();
     }
     /**
@@ -32,7 +31,15 @@ class MainController extends Controller
     public function modulesAction($request)
     {
         $formConf = array('action' => '');
-        $this->useForm(new ModulesListForm(), $formConf, $request, 'block3');
+        $this->useForm( new \Src\Modules\Admin\Forms\ModuleListForm('update'), $formConf, $request, 'block3');
+
+        return $this->render();
+    }
+    
+    public function jMenuAction($request)
+    {
+        $formConf = array('action' => '');
+        $this->useForm( new \Src\Modules\Admin\Forms\JMenuForm('update'), $formConf, $request, 'block3');
 
         return $this->render();
     }
@@ -52,15 +59,6 @@ class MainController extends Controller
                             )
                         )
                     ),
-
-                    /*'block1' => array(
-                        'main_menu' => array(
-                            'view' => '/Src/Views/Themes/Bootstrap/Components/navbar_top_black.html.twig',
-                            'vars' => array(
-                                'list' => Container::get('Main/MenuModel')->getMenu('main_menu'),
-                            )
-                        )
-                    ),*/
 
                 )
             )

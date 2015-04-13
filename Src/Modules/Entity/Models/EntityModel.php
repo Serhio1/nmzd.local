@@ -128,7 +128,7 @@ class EntityModel extends Model
      */
     public function updateEntity($values, $selectParams)
     {
-        $this->update($this->table, $values, $selectParams);
+        $this->update($this->table, array_filter($values), $selectParams);
     }
 
     /**
