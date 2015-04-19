@@ -39,6 +39,10 @@ class MainController extends Controller
     public function jMenuAction($request)
     {
         $formConf = array('action' => '');
+        $jsTop = array(
+            'jQuery' => '/Src/Views/Themes/Bootstrap/js/jquery-1.9.1.js',
+        );
+        Container::get('params')->setThemeData(array('jsTop' => $jsTop));
         $this->useForm( new \Src\Modules\Admin\Forms\JMenuForm('update'), $formConf, $request, 'block3');
 
         return $this->render();
