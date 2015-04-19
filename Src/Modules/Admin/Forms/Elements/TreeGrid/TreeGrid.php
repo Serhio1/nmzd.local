@@ -204,31 +204,22 @@ class TreeGrid extends Element {
                         var roots = $(\'#' . $this->name . '\').treegrid(\'getRoots\');
                         if (roots) {
                             lastRoot = roots[roots.length-1];
-                            children = $(\'#' . $this->name . '\').treegrid(\'getChildren\', lastRoot.id);
-                            if (children) {
-                                lastChild = children[children.length-1];
+                            var lastId = 0;
+                            
+                            for (index = 0; index < roots.length; ++index) {
+                                lastId = (roots[index].id > lastId) ? roots[index].id : lastId;
+                                if (typeof roots[index].children === "undefined") {continue;}
+                                children = roots[index].children; 
+                                for (innerIndex=0; innerIndex<children.length; ++innerIndex) {
+                                    lastId = (children[innerIndex].id > lastId) ? children[innerIndex].id : lastId;
+                                }
                             }
                         }
-
-                        
-                        
-                        if($(\'#' . $this->name . '\').is(\'[last]\')) {
-                            parentId = $(\'#' . $this->name . '\').attr(\'last\');
-                            $(\'#' . $this->name . '\').attr(\'last\', parseInt(parentId)+1);
-                        } else {
-                            parentId = (lastChild)?lastChild.id+2:(lastRoot)?lastRoot.id+2:1;
-                            $(\'#' . $this->name . '\').attr(\'last\', parentId+1);
-                        }
-                        
-                        
-                        
-                        console.log($(\'#' . $this->name . '\').attr(\'last\'));
-                        
                         var node = $(\'#' . $this->name . '\').treegrid(\'getSelected\');
                         $(\'#' . $this->name . '\').treegrid(\'append\',{
                                 parent: (node)?node.id:null,
                                 data: [{
-                                        id: parentId,';
+                                        id: parseInt(lastId)+1,';
                                 $markup .= $this->options['params']['treeField'] . ': \'New\'';
                                 $markup .= '}]
                         })
