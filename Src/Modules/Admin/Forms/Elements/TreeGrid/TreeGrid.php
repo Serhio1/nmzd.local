@@ -209,8 +209,20 @@ class TreeGrid extends Element {
                                 lastChild = children[children.length-1];
                             }
                         }
-                        parentId = (lastChild)?lastChild.id+1:(lastRoot)?lastRoot.id+1:1;
+
                         
+                        
+                        if($(\'#' . $this->name . '\').is(\'[last]\')) {
+                            parentId = $(\'#' . $this->name . '\').attr(\'last\');
+                            $(\'#' . $this->name . '\').attr(\'last\', parseInt(parentId)+1);
+                        } else {
+                            parentId = (lastChild)?lastChild.id+2:(lastRoot)?lastRoot.id+2:1;
+                            $(\'#' . $this->name . '\').attr(\'last\', parentId+1);
+                        }
+                        
+                        
+                        
+                        console.log($(\'#' . $this->name . '\').attr(\'last\'));
                         
                         var node = $(\'#' . $this->name . '\').treegrid(\'getSelected\');
                         $(\'#' . $this->name . '\').treegrid(\'append\',{
