@@ -24,8 +24,11 @@ class Module extends BaseModule
      */
     public function init()
     {
-        Container::register('Pdf/PdfModel',function() {
-            return new \Src\Modules\Pdf\Models\PdfModel();
+        Container::register('Pdf/PdfConfigModel',function() {
+            return new \Src\Modules\Pdf\Models\PdfConfigModel();
+        });
+        Container::register('Pdf/PdfTemplateModel',function() {
+            return new \Src\Modules\Pdf\Models\PdfTemplateModel();
         });
     }
 
@@ -60,13 +63,13 @@ class Module extends BaseModule
     public function getRoutes()
     {
         return array(
-            'pdfCreate' => array(
-                'uri' => '/create',
+            'pdfTest' => array(
+                'uri' => '/test',
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfController',
-                            'create',
+                            'Src/Modules/Pdf/Controllers/PdfConfigController',
+                            'test',
                             $request
                         );
                     }
@@ -78,7 +81,7 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfController',
+                            'Src/Modules/Pdf/Controllers/PdfConfigController',
                             'viewAll',
                             $request
                         );
@@ -90,7 +93,7 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfController',
+                            'Src/Modules/Pdf/Controllers/PdfConfigController',
                             'view',
                             $request,
                             true
@@ -103,7 +106,7 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfController',
+                            'Src/Modules/Pdf/Controllers/PdfConfigController',
                             'create',
                             $request,
                             true
@@ -116,7 +119,7 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfController',
+                            'Src/Modules/Pdf/Controllers/PdfConfigController',
                             'edit',
                             $request,
                             true
@@ -129,7 +132,73 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfController',
+                            'Src/Modules/Pdf/Controllers/PdfConfigController',
+                            'delete',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+                        
+            // pdf template entity
+            'viewAllTemplates' => array(
+                'uri' => '/template',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Pdf/Controllers/PdfTemplateController',
+                            'viewAll',
+                            $request
+                        );
+                    }
+                )
+            ),
+            'viewTemplate' => array(
+                'uri' => '/template/view',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Pdf/Controllers/PdfTemplateController',
+                            'view',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+            'createTemplate' => array(
+                'uri' => '/template/create',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Pdf/Controllers/PdfTemplateController',
+                            'create',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+            'editTemplate' => array(
+                'uri' => '/template/edit',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Pdf/Controllers/PdfTemplateController',
+                            'edit',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+            'deletePdfTemplate' => array(
+                'uri' => '/template/delete',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Pdf/Controllers/PdfTemplateController',
                             'delete',
                             $request,
                             true

@@ -7,9 +7,9 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Core\Container;
 use Symfony\Component\HttpFoundation\Response;
 
-class PdfController extends EntityController
+class PdfConfigController extends EntityController
 {
-    protected $entity = 'Pdf/PdfModel';
+    protected $entity = 'Pdf/PdfConfigModel';
 
     protected $entityUrl = '/pdf/config';
 
@@ -24,7 +24,14 @@ class PdfController extends EntityController
         'Src/Modules/Pdf/Views/css/pdfstyle.css'
     );
     
-    
+    public function testAction()
+    {
+        $tplModel = Container::get('Pdf/PdfTemplateModel');
+        $tpl = $tplModel->selectEntity(array('id'=>1));
+        $configModel = Container::get('Pdf/PdfConfigModel');
+        $config = $configModel->selectEntity(array('id'=>2));
+        return $this->generate(Container::get('twigStr')->render($tpl[0]['body'], array('test'=>'world')), $config[0]);
+    }
 
 
     /*public function createAction(Request $request)
@@ -41,7 +48,7 @@ class PdfController extends EntityController
     * @param string $filename
     *   name of the PDF file to be generated.
     */
-    public function generate($html)
+    public function generate($html, $config, $filename = 'newPdfDocument')
     {
         // International Paper Sizes ( width x height).
         $paper_size = array(
@@ -95,17 +102,17 @@ class PdfController extends EntityController
           'Ledger' => array('w' => 279.4, 'h' => 431.8),
         );
 
-        $page = 'A4'; //conf
-        $font_size = '10';
-        $font_style = 'DejaVuSerif';
+        $page = $config['page_type']; //conf
+        $font_size = $config['font_size'];
+        $font_style = $config['font_style'];
 
         // DEFAULT PDF margin Values.
-        $margin_top = 16; //conf
-        $margin_right = 15;
-        $margin_bottom = 16;
-        $margin_left = 15;
-        $margin_header = 9;
-        $margin_footer = 9;
+        $margin_top = $config['margin_top']; //conf
+        $margin_right = $config['margin_right'];
+        $margin_bottom = $config['margin_bottom'];
+        $margin_left = $config['margin_left'];
+        $margin_header = $config['margin_header'];
+        $margin_footer = $config['margin_footer'];
 
         // Creating Instance of mPDF Class Library.
         require_once 'Src/Modules/Pdf/Libs/mpdf60/mpdf.php';
@@ -129,26 +136,26 @@ class PdfController extends EntityController
         $mpdf->img_dpi = 96;
 
         // Enabling header option if available.
-        $header = ''; //string in conf
+        $header = $config['header']; //string in conf
         if (isset($header) && $header != NULL) {
-          $header = token_replace($header);
+          //$header = token_replace($header);
           $mpdf->SetHTMLHeader($header);
         }
 
         // Enabling Footer option if available.
-        $footer = '';
+        $footer = $config['footer'];
         if (isset($footer) && $footer != NULL) {
-          $footer = token_replace($footer);
+          //$footer = token_replace($footer);
           $mpdf->SetHTMLFooter($footer);
         }
 
         // Setting Watermark Text to PDF.
         $watermark_option = 'text'; //conf
-        $watermark_opacity = 0.1;
+        $watermark_opacity = $config['watermark_opacity'];
 
         // For watermark Text.
         if ($watermark_option == 'text') {
-          $text = 'test watermark';
+          $text = $config['watermark_text'];
           if (isset($text) && $text != NULL) {
             $mpdf->SetWatermarkText($text, $watermark_opacity);
             $mpdf->showWatermarkText = TRUE;
@@ -156,45 +163,48 @@ class PdfController extends EntityController
         }
 
         // Setting Title to PDF.
-        $title = 'test title';
+        $title = $config['doc_title'];
         if (isset($title) && $title != NULL) {
           $mpdf->SetTitle($title);
         }
 
         // Setting Author to PDF.
-        $author = 'some author'; //conf
+        $author = $config['doc_author']; //conf
         if (isset($author) && $author != NULL) {
           $mpdf->SetAuthor($author);
         }
 
         // Setting Subject to PDF.
-        $subject = 'some subject';
+        $subject = $config['doc_subject'];
         if (isset($subject) && $subject != NULL) {
           $mpdf->SetSubject($subject);
         }
 
         // Setting creator to PDF.
-        $creator = 'some creator';
+        $creator = $config['doc_creator'];
         if (isset($creator) && $creator != NULL) {
           $mpdf->SetCreator($creator);
         }
 
         // Setting Password to PDF.
-        $password = '';
+        $password = $config['password'];
         if (isset($password) && $password != NULL) {
           // Print and Copy is allowed.
           $mpdf->SetProtection(array('print', 'copy'), $password, $password);
         }
 
         // Setting CSS stylesheet to PDF.
-        $stylesheet = 'Src/Modules/Pdf/Views/css/pdfstyle.css';
-        $stylesheet_content = NULL;
-        if (isset($stylesheet) && $stylesheet != NULL) {
-          // Check module directory
-          if (isset($stylesheet)) {
-            $stylesheet_content = file_get_contents($stylesheet);
-            $mpdf->WriteHTML($stylesheet_content, 1);
-          }
+        if (!empty($config['stylesheets'])) {
+            $cssArr = explode('<br />', nl2br($config['stylesheets']));
+            $cssArr = array_map('trim',$cssArr);
+            $cssArr = array_filter($cssArr);
+            foreach ($cssArr as $key => $stylesheet) {
+                $stylesheet_content = NULL;
+                if (isset($stylesheet) && $stylesheet != NULL) {
+                    $stylesheet_content = file_get_contents($stylesheet);
+                    $mpdf->WriteHTML($stylesheet_content, 1);
+                }
+            }
         }
 
         // Writing html content for pdf buffer.
@@ -244,7 +254,7 @@ class PdfController extends EntityController
             break;
         }*/
 
-        return $mpdf->Output($filename . '.pdf', 'D');
+        return $mpdf->Output($filename . '.pdf', $config['save_option']);
     }
 
 }

@@ -9,7 +9,7 @@ use App\Parameters;
 use \Twig_Loader_Filesystem;
 use \Twig_Environment;
 use App\Patches\Nmzd_Twig_Environment;
-
+use Twig_Loader_String;
 
 class Services
 {

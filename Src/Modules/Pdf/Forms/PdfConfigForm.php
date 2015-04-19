@@ -5,7 +5,6 @@ namespace Src\Modules\Pdf\Forms;
 use Src\Modules\Entity\Forms\EntityForm;
 use Symfony\Component\HttpFoundation\Request;
 use PFBC\Element;
-use Src\Modules\Nmkd\Forms\Elements\LabCKEditor\LabCKEditor;
 use App\Core\Container;
 
 class PdfConfigForm extends EntityForm
@@ -13,7 +12,7 @@ class PdfConfigForm extends EntityForm
 
     protected $formName = 'pdf_config_form';
 
-    protected $entity = 'Pdf/PdfModel';
+    protected $entity = 'Pdf/PdfConfigModel';
 
     protected function config()
     {
@@ -33,51 +32,51 @@ class PdfConfigForm extends EntityForm
                 'value' => empty($values['title']) ? '' : $values['title'],
             )));
             $form->addElement(new Element\Select('Тип сторінок:', 'page_type', array(
-                '4A0 (1682 x 2378)',
-                '2A0 (1189 x 1682)',
-                'A0 (841 x 1189)',
-                'A1 (594 x 841)',
-                'A2 (420 x 594)',
-                'A3 (297 x 420)',
-                'A4 (210 x 297)',
-                'A5 (148 x 210)',
-                'A6 (105 x 148)',
-                'A7 (74 x 105)',
-                'A8 (52 x 74)',
-                'A9 (37 x 52)',
-                'A10 (26 x 37)',
-                'B0 (1000 x 1414)',
-                'B1 (707 x 1000)',
-                'B2 (500 x 707)',
-                'B3 (353 x 500)',
-                'B4 (250 x 353)',
-                'B5 (176 x 250)',
-                'B6 (125,x 176)',
-                'B7 (88 x 125)',
-                'B8 (62 x 88)',
-                'B9 (44 x 62)',
-                'B10 (31 x 44)',
-                'C0 (917 x 1297)',
-                'C1 (648 x 917)',
-                'C2 (458 x 648)',
-                'C3 (324 x 458)',
-                'C4 (229 x 324)',
-                'C5 (162 x 229)',
-                'C6 (114 x 162)',
-                'C7 (81 x 114)',
-                'C8 (57 x 81)',
-                'C9 (40 x 57)',
-                'C10 (28 x 40)',
-                'RA0 (860 x 1220)',
-                'RA1 (610 x 860)',
-                'RA2 (430 x 610)',
-                'SRA0 (900 x 1280)',
-                'SRA1 (640 x 900)',
-                'SRA2 (450 x 640)',
-                'Letter (215.9 x 279.4)',
-                'Legal (215.9 x 355.6)',
-                'Ledger (279.4 x 431.8)',
-            ), array('value' => 'A4 (210 x 297)')));
+                '4A0' => '4A0 (1682 x 2378)',
+                '2A0' => '2A0 (1189 x 1682)',
+                'A0' => 'A0 (841 x 1189)',
+                'A1' => 'A1 (594 x 841)',
+                'A2' => 'A2 (420 x 594)',
+                'A3' => 'A3 (297 x 420)',
+                'A4' => 'A4 (210 x 297)',
+                'A5' => 'A5 (148 x 210)',
+                'A6' => 'A6 (105 x 148)',
+                'A7' => 'A7 (74 x 105)',
+                'A8' => 'A8 (52 x 74)',
+                'A9' => 'A9 (37 x 52)',
+                'A10' => 'A10 (26 x 37)',
+                'B0' => 'B0 (1000 x 1414)',
+                'B1' => 'B1 (707 x 1000)',
+                'B2' => 'B2 (500 x 707)',
+                'B3' => 'B3 (353 x 500)',
+                'B4' => 'B4 (250 x 353)',
+                'B5' => 'B5 (176 x 250)',
+                'B6' => 'B6 (125,x 176)',
+                'B7' => 'B7 (88 x 125)',
+                'B8' => 'B8 (62 x 88)',
+                'B9' => 'B9 (44 x 62)',
+                'B10' => 'B10 (31 x 44)',
+                'C0' => 'C0 (917 x 1297)',
+                'C1' => 'C1 (648 x 917)',
+                'C2' => 'C2 (458 x 648)',
+                'C3' => 'C3 (324 x 458)',
+                'C4' => 'C4 (229 x 324)',
+                'C5' => 'C5 (162 x 229)',
+                'C6' => 'C6 (114 x 162)',
+                'C7' => 'C7 (81 x 114)',
+                'C8' => 'C8 (57 x 81)',
+                'C9' => 'C9 (40 x 57)',
+                'C10' => 'C10 (28 x 40)',
+                'RA0' => 'RA0 (860 x 1220)',
+                'RA1' => 'RA1 (610 x 860)',
+                'RA2' => 'RA2 (430 x 610)',
+                'SRA0' => 'SRA0 (900 x 1280)',
+                'SRA1' => 'SRA1 (640 x 900)',
+                'SRA2' => 'SRA2 (450 x 640)',
+                'Letter' => 'Letter (215.9 x 279.4)',
+                'Legal' => 'Legal (215.9 x 355.6)',
+                'Ledger' => 'Ledger (279.4 x 431.8)',
+            ), array('value' => 'A4')));
             
             $form->addElement(new Element\Number('Розмір шрифту', 'font_size', array(
                 'value' => empty($values['font_size']) ? '12' : $values['font_size'],
@@ -147,7 +146,7 @@ class PdfConfigForm extends EntityForm
             $form->addElement(new Element\Select('Тип збереження:', 'save_option', array(
                 'I' => 'Переглянути в браузері',
                 'D' => 'Скачати',
-            )));
+            ), empty($values['save_option']) ? array('value' => $values['save_option']) : array('value' => $values['save_option'])));
             
             $this->addControls($form, $request);
         }

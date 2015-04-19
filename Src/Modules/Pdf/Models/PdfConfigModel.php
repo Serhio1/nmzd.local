@@ -4,7 +4,7 @@ namespace Src\Modules\Pdf\Models;
 
 use Src\Modules\Entity\Models\EntityModel;
 
-class PdfModel extends EntityModel
+class PdfConfigModel extends EntityModel
 {
 
     protected $table = 'pdf_config';
