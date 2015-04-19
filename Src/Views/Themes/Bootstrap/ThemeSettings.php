@@ -34,7 +34,7 @@ class ThemeSettings
         $themeData['css'][] = '/Src/Views/Themes/Bootstrap/css/bootstrap.min.css';
         $themeData['css'][] = '/Src/Views/Themes/Bootstrap/css/main.css';
         
-        $themeData['jsTop']['jquery'] = '/Src/Views/Themes/Bootstrap/js/jquery-1.9.1.js';
+        
 
         return $themeData;
     }

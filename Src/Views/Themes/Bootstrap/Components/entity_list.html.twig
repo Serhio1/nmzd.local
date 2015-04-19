@@ -1,0 +1,35 @@
+{# needs bootstrap 2.3 #}
+<div class="entity-list">
+<ul {%if entity.topMenu.id|length%}id="{{entity.topMenu.id}}"{%endif%} class="entity-top-menu nav nav-pills">
+{% for id, params in entity.topMenu.children %}
+    <li class="{% if params.url == current_url %}active{% endif %}"><a href="{{ params.url }}">{{ params.title }}</a></li>
+{% endfor %}
+</ul>
+
+<table class="table entity-table table-striped">
+    <thead>
+    <tr>
+        {% for title in entity.table.titles %}
+            <th style="text-align:center;">{{ title }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+{% for entityName, params in entity.table.list %}
+    <tr>
+        <td style="text-align:center;">
+            {{ entityName }}
+        </td>
+        <td style="text-align:center;">
+            <ul class="entity-options">
+            {% for title, url in params %}
+                <li><a href="{{ url }}">{{ title }}</a></li>
+            {% endfor %}
+            </ul>
+        </td>
+    </tr>
+{% endfor %}
+    </tbody>
+</table>
+</div>
+

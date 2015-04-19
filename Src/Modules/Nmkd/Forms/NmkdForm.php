@@ -38,10 +38,10 @@ class NmkdForm extends BaseForm
     {
         $idDiscipline = $request->query->get('id');
         $entity = $this->getEntity();
-        if ($this->operation == 'create') {
+        /*if ($this->operation == 'create') {
             $questionsStr = '';
-            if (!empty($_SESSION[$this->formName]['questions'])) {
-                $questions = $_SESSION[$this->formName]['questions'];
+            if (!empty($_SESSION[$this->formName][$request->query->get('id')]['questions'])) {
+                $questions = $_SESSION[$this->formName][$request->query->get('id')]['questions'];
                 $questionsStr = implode($questions, "\r\n");
             }
             $form->addElement(new Element\HTML('<legend>Введіть запитання</legend>'));
@@ -56,31 +56,26 @@ class NmkdForm extends BaseForm
             $form->addElement(new Element\Button('Далі', 'submit'));
         }
         
-        if ($this->operation == 'update') {
+        if ($this->operation == 'update') {*/
+        $questionsStr = '';
+        if (!empty($_SESSION[$this->formName][$request->query->get('id')]['questions'])) {
+            $questions = $_SESSION[$this->formName][$request->query->get('id')]['questions'];
+            $questionsStr = implode($questions, "\r\n");
+        } else {
+            $selection = $this->getEntity()->selectEntity($idDiscipline);
             $questionsStr = '';
-            if (!empty($_SESSION[$this->formName]['questions'])) {
-                $questions = $_SESSION[$this->formName]['questions'];
-                $questionsStr = implode($questions, "\r\n");
-            } else {
-                $selection = $this->getEntity()->selectEntity($idDiscipline);
-                $questionsStr = '';
-                foreach ($selection as $row=>$data) {
-                    $questionsStr .= $data['name'] . "\r\n";
-                }
+            foreach ($selection as $row=>$data) {
+                $questionsStr .= $data['name'] . "\r\n";
             }
-            $form->addElement(new Element\HTML('<legend>Введіть запитання</legend>'));
-            $form->addElement(new Element\Textarea('', 'questions', array(
-                'required' => 1,
-                'value' => $questionsStr
-            )));
-
-            $form->addElement(new Element\Button('Відмінити', 'button', array(
-                'onclick' => 'history.go(-1);'
-            )));
-            $form->addElement(new Element\Button('Далі', 'submit'));
         }
+        $form->addElement(new Element\HTML('<legend>Введіть запитання</legend>'));
+        $form->addElement(new Element\Textarea('', 'questions', array(
+            'required' => 1,
+            'value' => $questionsStr
+        )));
         
-   
+        $form = $this->addControls($form, $request);
+            
         return $form;
     }
     
@@ -96,7 +91,7 @@ class NmkdForm extends BaseForm
         $questionArr = array_map('trim',$questionArr);
         $questionArr = array_filter($questionArr);
     
-        $_SESSION[$this->formName]['questions'] = $questionArr;
+        $_SESSION[$this->formName][$request->query->get('id')]['questions'] = $questionArr;
     }
 
     /**
@@ -111,13 +106,13 @@ class NmkdForm extends BaseForm
     {
         $this->inputProcess($request);
         
-        if ($this->operation == 'create') {
+        /*if ($this->operation == 'create') {
             
             $form->addElement(new Element\HTML('<legend>Визначте структуру запитань</legend>'));
             $form->addElement(new Hierarchy('Структура:', 
                 'hierarchy', 
                 array(
-                    'content' => $_SESSION[$this->formName]['questions'],
+                    'content' => $_SESSION[$this->formName][$request->query->get('id')]['questions'],
                     'groups' => array(
                         'Змістовий модуль',
                         'Тема',
@@ -128,7 +123,7 @@ class NmkdForm extends BaseForm
                 )                
             ));
         }
-        if ($this->operation == 'update') {
+        if ($this->operation == 'update') {*/
             $disciplineId = $request->query->get('id');
             $entity = $this->getEntity();
             $hierarchy = $entity->selectQuestionHierarchy($disciplineId);
@@ -142,7 +137,7 @@ class NmkdForm extends BaseForm
             $form->addElement(new Hierarchy('Структура:', 
                 'hierarchy', 
                 array(
-                    'content' => $_SESSION[$this->formName]['questions'],
+                    'content' => $_SESSION[$this->formName][$request->query->get('id')]['questions'],
                     'groups' => array(
                         'Змістовий модуль',
                         'Тема',
@@ -152,12 +147,9 @@ class NmkdForm extends BaseForm
                     'value' => $value
                 )                
             ));
-        }
+        //}
         
-        $form->addElement(new Element\Button('Назад', 'button', array(
-            'onclick' => 'history.go(-1);'
-        )));
-        $form->addElement(new Element\Button('Далі', 'submit'));
+        $form = $this->addControls($form, $request);
         
         return $form;
     }
@@ -169,7 +161,7 @@ class NmkdForm extends BaseForm
      */
     protected function setHierarchyProcess($request)
     {
-        $_SESSION[$this->formName]['hierarchy'] = $request->request->get('hierarchy');
+        $_SESSION[$this->formName][$request->query->get('id')]['hierarchy'] = $request->request->get('hierarchy');
     }
     
     public function setTypes($form, $request, $config)
@@ -192,11 +184,11 @@ class NmkdForm extends BaseForm
             $typesArr[$values['id']] = $values['title'];
         }
         
-        foreach ($_SESSION[$this->formName]['hierarchy'] as $hKey => $hVal) {
+        foreach ($_SESSION[$this->formName][$request->query->get('id')]['hierarchy'] as $hKey => $hVal) {
             $hierarchyArr[strstr($hVal, '-', true)] = ltrim(strstr($hVal, '-'), '-');
         }
         
-        foreach ($_SESSION[$this->formName]['questions'] as $qKey => $question) {
+        foreach ($_SESSION[$this->formName][$request->query->get('id')]['questions'] as $qKey => $question) {
             $questionArr[$qKey]['title'] = $question;
             if ($hierarchyArr[$qKey] == '0') {
                 $questionArr[$qKey]['no-check'] = true;
@@ -213,10 +205,7 @@ class NmkdForm extends BaseForm
             'value' => $value
         )));
         
-        $form->addElement(new Element\Button('Назад', 'button', array(
-            'onclick' => 'history.go(-1);'
-        )));
-        $form->addElement(new Element\Button('Зберегти', 'submit'));
+        $form = $this->addControls($form, $request);
         
         return $form;
     }
@@ -234,49 +223,25 @@ class NmkdForm extends BaseForm
                 $types[$key] = $val[0];
             }
         }
-        $_SESSION[$this->formName]['types'] = $types;
+        $_SESSION[$this->formName][$request->query->get('id')]['types'] = $types;
     }
     
     public function submit(Request $request)
     {
         $vars = array();
-        if ($this->operation == 'create') {
+        /*if ($this->operation == 'create') {
             $vars['discipline_id'] = $request->query->get('id');
             $this->setTypesProcess($request);
 
-            $questions = $_SESSION[$this->formName]['questions'];
-            $typesQuestions = $_SESSION[$this->formName]['types'];
+            $questions = $_SESSION[$this->formName][$request->query->get('id')]['questions'];
+            $typesQuestions = $_SESSION[$this->formName][$request->query->get('id')]['types'];
             $typesQuestionsRes = array();
             foreach ($typesQuestions as $key => $typeQuestion) {
                 $typeQuestionExp = explode('-', $typeQuestion);
                 $typesQuestionsRes[$typeQuestionExp[0]][] = $typeQuestionExp[1];
             }
 
-            $hierarchy = $_SESSION[$this->formName]['hierarchy'];
-            $hierarchyRes = array();
-            foreach ($hierarchy as $key => $pair) {
-                $pairArr = explode('-', $pair);
-                $hierarchyRes[$pairArr[0]] = $pairArr[1];
-            }
-
-            $disciplineId = $request->query->get('id');
-            $entity = $this->getEntity();
-            $entity->createEntity($questions, $disciplineId, $typesQuestionsRes, $hierarchyRes);
-            
-        }
-        if ($this->operation == 'update') {
-            $vars['discipline_id'] = $request->query->get('id');
-            $this->setTypesProcess($request);
-
-            $questions = $_SESSION[$this->formName]['questions'];
-            $typesQuestions = $_SESSION[$this->formName]['types'];
-            $typesQuestionsRes = array();
-            foreach ($typesQuestions as $key => $typeQuestion) {
-                $typeQuestionExp = explode('-', $typeQuestion);
-                $typesQuestionsRes[$typeQuestionExp[0]][] = $typeQuestionExp[1];
-            }
-
-            $hierarchy = $_SESSION[$this->formName]['hierarchy'];
+            $hierarchy = $_SESSION[$this->formName][$request->query->get('id')]['hierarchy'];
             $hierarchyRes = array();
             foreach ($hierarchy as $key => $pair) {
                 $pairArr = explode('-', $pair);
@@ -288,6 +253,30 @@ class NmkdForm extends BaseForm
             $entity->updateEntity($questions, $disciplineId, $typesQuestionsRes, $hierarchyRes);
             
         }
+        if ($this->operation == 'update') {*/
+            $vars['discipline_id'] = $request->query->get('id');
+            $this->setTypesProcess($request);
+
+            $questions = $_SESSION[$this->formName][$request->query->get('id')]['questions'];
+            $typesQuestions = $_SESSION[$this->formName][$request->query->get('id')]['types'];
+            $typesQuestionsRes = array();
+            foreach ($typesQuestions as $key => $typeQuestion) {
+                $typeQuestionExp = explode('-', $typeQuestion);
+                $typesQuestionsRes[$typeQuestionExp[0]][] = $typeQuestionExp[1];
+            }
+
+            $hierarchy = $_SESSION[$this->formName][$request->query->get('id')]['hierarchy'];
+            $hierarchyRes = array();
+            foreach ($hierarchy as $key => $pair) {
+                $pairArr = explode('-', $pair);
+                $hierarchyRes[$pairArr[0]] = $pairArr[1];
+            }
+
+            $disciplineId = $request->query->get('id');
+            $entity = $this->getEntity();
+            $entity->updateEntity($questions, $disciplineId, $typesQuestionsRes, $hierarchyRes);
+            
+        //}
         $step = $request->request->get('step');
         if ($step == 'finish') {
             $this->finishEvent($vars);

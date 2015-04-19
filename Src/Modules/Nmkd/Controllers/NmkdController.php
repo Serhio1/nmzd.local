@@ -4,6 +4,8 @@ namespace Src\Modules\Nmkd\Controllers;
 
 use App\Core\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use App\Core\Container;
+use Symfony\Component\HttpFoundation\Response;
 
 class NmkdController extends Controller
 {
@@ -24,11 +26,19 @@ class NmkdController extends Controller
         return $this->render();
     }
     
-     public function editAction(Request $request)
+    public function editAction(Request $request)
     {
-        $formConf = array('action' => $this->entityUrl);
-        $this->useForm(new $this->form('update'), $formConf, $request, $this->block);
+        $formConf = array('action' => '/nmkd/nmkd/edit');
+        $form = $this->useForm(new $this->form('update'), $formConf, $request, $this->block);
 
+        if ($request->isXmlHttpRequest()) {
+            //$formConf = array('action' => '/nmkd/nmkd/edit');
+            //$form = $this->useForm(new $this->form('update'), $formConf, $request, $this->block);
+            $twig = Container::get('twig');
+            //$response = $twig->render($form['view'], $form['vars']);  
+            return new Response($form['vars']['form']);
+            //return new Response($response);
+        }
         
         return $this->render();
     }

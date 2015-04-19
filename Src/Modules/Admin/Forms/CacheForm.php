@@ -52,7 +52,7 @@ class CacheForm extends BaseForm
                 }
             });"
         )));
-        $form->addElement(new Element\Checkbox("", "cache", $options, array(
+        $form->addElement(new Element\Checkbox("", "enable_cache", $options, array(
             "value" => $states,
             "class" => $hidden
         )));
@@ -72,12 +72,12 @@ class CacheForm extends BaseForm
 
     public function submit(Request $request)
     {
-        $enableCache = $request->request->get('cache');
+        $enableCache = $request->request->get('enable_cache');
         $cacheConfJson = file_get_contents(Container::get('params')->getConfigDir() . '/' . 'cache.json');
         $cacheConf = json_decode($cacheConfJson, true);
         $cacheConf = array_fill_keys(array_keys($cacheConf), false);
 
-        if (!is_array($enableCache) && !empty($enableCache['enable_cache'])) {
+        if (empty($enableCache)) {
             $cacheConf['enable_cache'] = false;
         } else {
             $cacheConf['enable_cache'] = true;

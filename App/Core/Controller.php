@@ -98,6 +98,16 @@ abstract class Controller
             }
         }
         $formInstance = $form->build($request, $config);
+        
+        if ($request->isXmlHttpRequest()) {
+            $form = $formInstance->render(true);
+            return array(
+                'view' => '/Src/Views/Themes/Bootstrap/Components/std_form.html.twig',
+                'vars' => array(
+                    'form' => $form,
+                )
+            );
+        }
 
         Container::get('params')->setThemeData(
             array(

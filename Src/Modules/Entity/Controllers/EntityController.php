@@ -120,7 +120,12 @@ class EntityController extends Controller
     public function createAction($request)
     {
         $formConf = array('action' => $this->entityUrl);
-        $this->useForm(new $this->form('create'), $formConf, $request, $this->block);
+        $form = $this->useForm(new $this->form('create'), $formConf, $request, $this->block);
+        if ($request->isXmlHttpRequest()) {
+            $twig = Container::get('twig');
+            $response = $twig->render($form['view'], $form['vars']);
+            return new Response($response);
+        }
 
         return $this->render();
     }
@@ -134,8 +139,12 @@ class EntityController extends Controller
     public function editAction($request)
     {
         $formConf = array('action' => $this->entityUrl);
-        $this->useForm(new $this->form('update'), $formConf, $request, $this->block);
-
+        $form = $this->useForm(new $this->form('update'), $formConf, $request, $this->block);
+        if ($request->isXmlHttpRequest()) {
+            $twig = Container::get('twig');
+            $response = $twig->render($form['view'], $form['vars']);
+            return new Response($response);
+        }
         return $this->render();
     }
 
@@ -148,8 +157,12 @@ class EntityController extends Controller
     public function deleteAction($request)
     {
         $formConf = array('action' => $this->entityUrl);
-        $this->useForm(new $this->form('delete'), $formConf, $request, $this->block);
-
+        $form = $this->useForm(new $this->form('delete'), $formConf, $request, $this->block);
+        if ($request->isXmlHttpRequest()) {
+            $twig = Container::get('twig');
+            $response = $twig->render($form['view'], $form['vars']);
+            return new Response($response);
+        }
         return $this->render();
     }
 

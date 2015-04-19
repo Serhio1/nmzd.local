@@ -6,6 +6,7 @@ use Src\Modules\Entity\Controllers\EntityController;
 use Symfony\Component\HttpFoundation\Request;
 use App\Core\Container;
 use App\Core\Router;
+use Symfony\Component\HttpFoundation\Response;
 
 class LabController extends EntityController
 {
@@ -43,39 +44,86 @@ class LabController extends EntityController
                 'Видалити' => Router::buildUrl($this->entityUrl . '/delete', array('id' => $row['id'])),
             );
         }
-
-        $parent = Container::get($this->entity)->getParent();
+        
+        /*$topMenuComponent = '/Src/Views/Themes/Bootstrap/Components/horizontal_pills.html.twig';
+        $topMenuVars = array(
+                    'list' => array(
+                        'children' => array(
+                            array(
+                                'title' => 'Створити',
+                                'url' => (empty($parent)) ?
+                                    Router::buildUrl($this->entityUrl . '/create') :
+                                    Router::buildUrl($this->entityUrl . '/create', array('id' => $request->query->get('id'))),
+                            )
+                        ),
+                    ),
+                );
+        $disciplinesListComponent = '/Src/Views/Themes/Bootstrap/Components/list_with_options.html.twig';
+        $disciplinesListVars = array(
+                    'list' => $list,
+                    'titles' => $titles,
+                );
+        
+        
 
         Container::get('params')->setThemeData(
             array(
                 'items' => array(
                     $this->block => array(
                         'menus_top_menu' => array(
-                            'view' => '/Src/Views/Themes/Bootstrap/Components/horizontal_pills.html.twig',
-                            'vars' => array(
-                                'list' => array(
-                                    'children' => array(
-                                        array(
-                                            'title' => 'Створити',
-                                            'url' => (empty($parent)) ?
-                                                Router::buildUrl($this->entityUrl . '/create') :
-                                                Router::buildUrl($this->entityUrl . '/create', array('id' => $request->query->get('id'))),
-                                        )
-                                    ),
-                                )
-                            ),
+                            'view' => $topMenuComponent,
+                            'vars' => $topMenuVars,
                         ),
                         'menus_list' => array(
-                            'view' => '/Src/Views/Themes/Bootstrap/Components/list_with_options.html.twig',
-                            'vars' => array(
+                            'view' => $disciplinesListComponent,
+                            'vars' => $disciplinesListVars,
+                        ),
+                    )
+                )
+            )
+        );*/
+        $view = '/Src/Views/Themes/Bootstrap/Components/entity_list.html.twig';
+        $viewVars = array('entity' => array(
+                            'isAjax' => ($request->isXmlHttpRequest()) ? true : false,
+                            'topMenu' => array(
+                                'children' => array(
+                                    array(
+                                        'title' => 'Створити',
+                                        'url' => (empty($parent)) ?
+                                            Router::buildUrl($this->entityUrl . '/create') :
+                                            Router::buildUrl($this->entityUrl . '/create', array('id' => $request->query->get('id'))),
+                                    )
+                                ),
+                            ),
+                            'table' => array(
                                 'list' => $list,
                                 'titles' => $titles,
-                            ),
+                            )
+                        ),
+                    );
+        
+        Container::get('params')->setThemeData(
+            array(
+                'items' => array(
+                    $this->block => array(
+                        'entity_list' => array(
+                            'view' => $view,
+                            'vars' => $viewVars,
                         ),
                     )
                 )
             )
         );
+        
+        if ($request->isXmlHttpRequest()) {
+            $twig = Container::get('twig');
+            $response = '';
+            $response .= $twig->render($view, $viewVars);
+            //$response .= $twig->render($disciplinesListComponent, $disciplinesListVars);
+        
+            return new Response($response);
+        }
+        
 
         return $this->render();
     }

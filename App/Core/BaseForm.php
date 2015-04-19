@@ -39,26 +39,27 @@ class BaseForm
      */
     public function build($request, $config = array())
     {
-        
-        
         if (!empty($_SERVER["QUERY_STRING"])) {
             $config['action'] .= '?' . $_SERVER["QUERY_STRING"];
         }
-        $_SESSION[$this->formName]['action'] = $config['action'];
-        $config['action'] = '';
+        if ($request->isXmlHttpRequest()) {
+            $post = array();
+            parse_str($request->request->get('ajaxData'), $post);
+            foreach ($post as $key => $val) {
+                $request->request->set($key, $val);
+            }
+        } else {
+            $_SESSION[$this->formName]['action'] = $config['action'];
+            $config['action'] = '';
+        }
         
         if ($request->request->get('step') == 'finish') { 
             $config['action'] = $_SESSION[$this->formName]['action'];
-            /*if (!empty($_SERVER["QUERY_STRING"])) {
-                $config['action'] .= '?' . $_SERVER["QUERY_STRING"];
-            }*/
             $this->submit($request);
             $this->finishEvent();
         }
         $form = new Form($this->getFormName());
         
-        
-
         if (empty($this->steps)) {
             throw new \Exception('Form requires at least one step.');
         }
@@ -66,11 +67,6 @@ class BaseForm
         if (empty($requestedStep)) {
             $requestedStep = 0;
         }
-        
-        
-        
-        
-        
             $requestedStep++;
             if (empty($this->steps[$requestedStep])) {
                 $form->addElement(new Element\Hidden('step', 'finish'));
@@ -84,12 +80,21 @@ class BaseForm
             $callback = $this->steps[$requestedStep];
             $form = $this->$callback($form, $request, $config);
             $form->configure($config);
-        
-        
-        
-        
-        
-        
+
+        return $form;
+    }
+    
+    
+    protected function addControls($form, Request $request)
+    {
+        $form->addElement(new Element\Button('Відмінити', 'button', array(
+            'onclick' => 'history.go(-1);'
+        )));
+        if ($request->isXmlHttpRequest()) {
+            $form->addElement(new Element\Button('Зберегти','button',array('class'=>'ajax-submit')));
+        } else {
+            $form->addElement(new Element\Button('Зберегти', 'submit'));
+        }
         
         return $form;
     }

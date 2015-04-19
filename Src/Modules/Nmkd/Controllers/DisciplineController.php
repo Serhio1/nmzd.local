@@ -24,28 +24,31 @@ class DisciplineController extends EntityController
         foreach ($disciplineMenu['children'] as $key => $value) {
             $disciplineMenu['children'][$key]['url'] .= '?id=' . $request->query->get('id');
         }
+        
+        $jsTop = array(
+            'jQuery' => '/Src/Views/Themes/Bootstrap/js/jquery-1.9.1.js',
+            /*'AjE' => '/Src/Views/Themes/Bootstrap/js/ajaxEngine.js',
+            'AjEMenu' => '/Src/Views/Themes/Bootstrap/js/AjEMenu.js',*/
+        );
+        $jsBottom = array(
+            //'ajaxDisciplineMenu' => '/Src/Modules/Nmkd/Views/js/ajaxDisciplineMenu.js',
+        );
+        Container::get('params')->setThemeData(array('jsTop' => $jsTop));
+        Container::get('params')->setThemeData(array('jsBottom' => $jsBottom));
                 
         Container::get('params')->setThemeData(
             array(
                 'items' => array(
                     'block2' => array(
-                        'main_title' => array(
-                            'view' => '/Src/Modules/Main/Views/Components/main_title.html.twig',
-                            'vars' => array(
-                                'title' => 'Оберіть дію',
-                            )
-                        )
-                    ),
-                    'block3' => array(
                         'nmkd_menu' => array(
                             'view' => '/Src/Views/Themes/Bootstrap/Components/nav_vertical_pills.html.twig',
                             'vars' => array(
                                 'list' => $disciplineMenu,
-                                'brand' => 'НМЗД',
+                                'id' => 'discipline-menu',
                             )
-                        )
+                        ),
                     )
-                )
+                ),
             )
         );
         
