@@ -146,7 +146,7 @@ class PdfConfigForm extends EntityForm
             $form->addElement(new Element\Select('Тип збереження:', 'save_option', array(
                 'I' => 'Переглянути в браузері',
                 'D' => 'Скачати',
-            ), empty($values['save_option']) ? array('value' => $values['save_option']) : array('value' => $values['save_option'])));
+            ), isset($values['save_option']) ? array('value' => $values['save_option']) : array('value' => array('I' => 'Переглянути в браузері'))));
             
             $this->addControls($form, $request);
         }
