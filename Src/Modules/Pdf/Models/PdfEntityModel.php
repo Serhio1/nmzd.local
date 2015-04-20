@@ -1,44 +1,31 @@
 <?php
 
-namespace Src\Modules\Pdf\Controllers;
+namespace Src\Modules\Pdf\Models;
 
-use Src\Modules\Entity\Controllers\EntityController;
-use Symfony\Component\HttpFoundation\Request;
+use Src\Modules\Entity\Models\EntityModel;
 use App\Core\Container;
-use Symfony\Component\HttpFoundation\Response;
 
-class PdfConfigController extends EntityController
+class PdfEntityModel extends EntityModel
 {
-    protected $entity = 'Pdf/PdfConfigModel';
 
-    protected $entityUrl = '/pdf/config';
+    protected $table = 'pdf_entity';
 
-    protected $form = '\\Src\\Modules\\Pdf\\Forms\\PdfConfigForm';
-
-    protected $block = 'block3';
-    
-    
-    public $filename = 'test';
-    
-    public $styles = array(
-        'Src/Modules/Pdf/Views/css/pdfstyle.css'
+    protected $fields = array(
+        'template_id',
+        'config_id',
+        'key',
+        'title',
     );
     
-    public function testAction()
+    public function outPdf($key, $vars)
     {
+        $entity = $this->selectEntity(array('key'=>$key));
         $tplModel = Container::get('Pdf/PdfTemplateModel');
-        $tpl = $tplModel->selectEntity(array('id'=>1));
+        $tpl = $tplModel->selectEntity(array('id'=>$entity[0]['template_id']));
         $configModel = Container::get('Pdf/PdfConfigModel');
-        $config = $configModel->selectEntity(array('id'=>2));
-        return $this->generate(Container::get('twigStr')->render($tpl[0]['body'], array('test'=>'world')), $config[0]);
+        $config = $configModel->selectEntity(array('id'=>$entity[0]['config_id']));
+        return $this->generate(Container::get('twigStr')->render($tpl[0]['body'], $vars), $config[0]);
     }
-
-
-    /*public function createAction(Request $request)
-    {
-        return new Response($this->generate('<p>Some content</p>', 'test'));
-        //return $this->render();
-    }*/
     
     /**
     * Generate the PDF file using the mPDF library.
@@ -210,51 +197,7 @@ class PdfConfigController extends EntityController
         // Writing html content for pdf buffer.
         $mpdf->WriteHTML($html);
 
-        // Generating PDF File.
-        /*switch(variable_get('pdf_using_mpdf_pdf_save_option')) {
-          case 1:
-            // Dialog box for Download as PDF.
-            $mpdf->Output($filename . '.pdf', 'D');
-            exit;
-            break;
-          case 2:
-            $folder = pdf_using_mpdf_get_folder();
-            if (is_dir(drupal_realpath($folder)) ) {
-              if (!pdf_using_mpdf_is_writable(drupal_realpath($folder))) { die('not writtable');
-                if (drupal_rmdir($folder)) {
-                  drupal_mkdir($folder);
-                  drupal_chmod($folder, 0777);
-                }
-                else {
-                  drupal_set_message(t("Please ensure that public folder is writable."));
-                  exit;
-                }
-              }
-            } else {
-              if (pdf_using_mpdf_is_writable(drupal_realpath(file_build_uri('public://')))) {
-                drupal_mkdir($folder);
-                drupal_chmod($folder, 0777);
-              }
-              else {
-                drupal_set_message(t("Please ensure that public folder is writable."));
-                exit;
-              }
-            }
-            // Save to server 'Public file system path'.
-            $path = $folder . '/' . $filename . '.pdf';
-            $mpdf->Output($path , 'F');
-            drupal_goto($_SERVER['HTTP_REFERER']);
-            exit;
-            break;
-          case 0:
-          default:
-            // Open in same browser.
-            $mpdf->Output($filename . '.pdf', 'I'); 
-            exit;
-            break;
-        }*/
-
         return $mpdf->Output($filename . '.pdf', $config['save_option']);
     }
-
 }
+

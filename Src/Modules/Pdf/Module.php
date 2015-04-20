@@ -30,7 +30,10 @@ class Module extends BaseModule
         Container::register('Pdf/PdfTemplateModel',function() {
             return new \Src\Modules\Pdf\Models\PdfTemplateModel();
         });
-    }
+        Container::register('Pdf/PdfEntityModel',function() {
+            return new \Src\Modules\Pdf\Models\PdfEntityModel();
+        });
+    }   
 
     /**
      * Main method. Fires on every request.
@@ -68,7 +71,7 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfConfigController',
+                            'Src/Modules/Pdf/Controllers/ConfigController',
                             'test',
                             $request
                         );
@@ -81,9 +84,10 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfConfigController',
+                            'Src/Modules/Pdf/Controllers/ConfigController',
                             'viewAll',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -93,7 +97,7 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfConfigController',
+                            'Src/Modules/Pdf/Controllers/ConfigController',
                             'view',
                             $request,
                             true
@@ -106,7 +110,7 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfConfigController',
+                            'Src/Modules/Pdf/Controllers/ConfigController',
                             'create',
                             $request,
                             true
@@ -119,7 +123,7 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfConfigController',
+                            'Src/Modules/Pdf/Controllers/ConfigController',
                             'edit',
                             $request,
                             true
@@ -132,7 +136,7 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfConfigController',
+                            'Src/Modules/Pdf/Controllers/ConfigController',
                             'delete',
                             $request,
                             true
@@ -147,9 +151,10 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfTemplateController',
+                            'Src/Modules/Pdf/Controllers/TemplateController',
                             'viewAll',
-                            $request
+                            $request,
+                            true
                         );
                     }
                 )
@@ -159,7 +164,7 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfTemplateController',
+                            'Src/Modules/Pdf/Controllers/TemplateController',
                             'view',
                             $request,
                             true
@@ -172,7 +177,7 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfTemplateController',
+                            'Src/Modules/Pdf/Controllers/TemplateController',
                             'create',
                             $request,
                             true
@@ -185,7 +190,7 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfTemplateController',
+                            'Src/Modules/Pdf/Controllers/TemplateController',
                             'edit',
                             $request,
                             true
@@ -198,7 +203,74 @@ class Module extends BaseModule
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Pdf/Controllers/PdfTemplateController',
+                            'Src/Modules/Pdf/Controllers/TemplateController',
+                            'delete',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+                        
+            // pdf entity
+            'viewAllPdfEntities' => array(
+                'uri' => '',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Pdf/Controllers/PdfEntityController',
+                            'viewAll',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+            'viewPdfEntity' => array(
+                'uri' => '/view',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Pdf/Controllers/PdfEntityController',
+                            'view',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+            'createPdfEntity' => array(
+                'uri' => '/create',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Pdf/Controllers/PdfEntityController',
+                            'create',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+            'editPdfEntity' => array(
+                'uri' => '/edit',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Pdf/Controllers/PdfEntityController',
+                            'edit',
+                            $request,
+                            true
+                        );
+                    }
+                )
+            ),
+            'deletePdfEntity' => array(
+                'uri' => '/delete',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Pdf/Controllers/PdfEntityController',
                             'delete',
                             $request,
                             true
