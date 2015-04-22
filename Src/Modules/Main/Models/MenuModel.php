@@ -16,7 +16,7 @@ class MenuModel extends EntityModel
         'title',
     );
 
-    public function getMenu($menuKey)
+    public function getMenu($menuKey, $getParams=array())
     {
         
         $menusConfJson = file_get_contents(Container::get('params')->getConfigDir() . '/' . 'menus.json');
@@ -25,6 +25,12 @@ class MenuModel extends EntityModel
         $menu = array();
         foreach ($menusConf['rows'] as $key => $row) {
             if (!empty($row['text_id']) && $row['text_id'] == $menuKey) {
+                if (!empty($getParams)) {
+                    foreach ($row['children'] as $childNum => $child) {
+                        $row['children'][$childNum]['url'] = Router::buildUrl($child['url'],$getParams);
+                    }
+                }
+                
                 $menu = $row;
             }
         }

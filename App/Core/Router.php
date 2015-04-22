@@ -32,7 +32,12 @@ class Router
     {
         $strParams = '';
         if (!empty($params)) {
-            $strParams .= '?';
+            if (strpos($uri,'?') == false) {
+                $strParams .= '?';
+            } else {
+                $strParams .= '&';
+            }
+            
             foreach ($params as $param => $val) {
                 $strParams .= $param . '=' . $val . '&';
             }

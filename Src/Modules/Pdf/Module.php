@@ -278,6 +278,20 @@ class Module extends BaseModule
                     }
                 )
             ),
+                        
+            'downloadPdfEntity' => array(
+                'uri' => '/download',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Pdf/Controllers/PdfEntityController',
+                            'downloadPdf',
+                            $request
+                        );
+                    }
+                )
+            ),
+                        
             
         );
     }

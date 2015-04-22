@@ -4,6 +4,8 @@ namespace Src\Modules\Pdf\Controllers;
 
 use Src\Modules\Entity\Controllers\EntityController;
 use App\Core\Container;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class PdfEntityController extends EntityController
 {
@@ -14,6 +16,26 @@ class PdfEntityController extends EntityController
     protected $form = '\\Src\\Modules\\Pdf\\Forms\\PdfEntityForm';
 
     protected $block = 'block3';
+    
+    public function downloadPdfAction(Request $request)
+    {
+        if ($request->query->has('entity') &&
+            $request->query->has('option') &&
+            $request->query->has('pdf')) {
+            
+            if (Container::registered($request->query->get('entity'))) {
+                $entity = Container::get($request->query->get('entity'));
+            }
+            $pdfVarsMethod = 'Pdf' . ucfirst($request->query->get('option'));
+            $pdf = $request->query->get('pdf');
+            $pdfVars = $entity->$pdfVarsMethod($request);
+
+            return Container::get('Pdf/PdfEntityModel')->outPdf($pdf, $pdfVars);
+        } else {
+            return new Response('Error');
+        }
+        
+    }
     
     protected function preProcessView()
     {

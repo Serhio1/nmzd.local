@@ -21,7 +21,6 @@ class NmkdController extends Controller
     {
         $formConf = array('action' => $this->entityUrl);
         $this->useForm(new $this->form('create'), $formConf, $request, $this->block);
-
         
         return $this->render();
     }
@@ -40,6 +39,26 @@ class NmkdController extends Controller
             //return new Response($response);
         }
         
+        return $this->render();
+    }
+    
+    public function pdfAction(Request $request)
+    {
+        Container::get('params')->setThemeData(
+            array(
+                'items' => array(
+                    'block2' => array(
+                        'admin_menu' => array(
+                            'view' => '/Src/Views/Themes/Bootstrap/Components/nav_vertical_pills.html.twig',
+                            'vars' => array(
+                                'list' => Container::get('Main/MenuModel')->getMenu('nmkd_pdf_menu', array('id'=>$request->query->get('id'))),
+                            )
+                        )
+                    ),
+
+                )
+            )
+        );
         return $this->render();
     }
 

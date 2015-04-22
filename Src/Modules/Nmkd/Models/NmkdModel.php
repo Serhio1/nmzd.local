@@ -5,10 +5,38 @@ namespace Src\Modules\Nmkd\Models;
 use App\Core\Model;
 use App\Core\Container;
 use \PDO;
+use Symfony\Component\HttpFoundation\Request;
 
 class NmkdModel extends Model
 {
     private $tqForTypes = array();
+    
+    public function PdfMethodicalRecommendations(Request $request)
+    {
+        $discipline = Container::get('Nmkd/DisciplineModel')->selectById($request->query->get('id'));
+        return array(
+            'disc_name' => $discipline['title'],
+            'year' => date("Y"),
+        );
+    }
+    
+    public function PdfWorkPlan(Request $request)
+    {
+        $discipline = Container::get('Nmkd/DisciplineModel')->selectById($request->query->get('id'));
+        return array(
+            'disc_name' => $discipline['title'],
+            'year' => date("Y"),
+        );
+    }
+    
+    public function PdfTrainingPlan(Request $request)
+    {
+        $discipline = Container::get('Nmkd/DisciplineModel')->selectById($request->query->get('id'));
+        return array(
+            'disc_name' => $discipline['title'],
+            'year' => date("Y"),
+        );
+    }
     
     /**
      * Creates new Nmkd.

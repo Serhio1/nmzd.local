@@ -66,7 +66,7 @@ class Parameters
                 'base_url' => Container::get('params')->getProtocol() . Container::get('params')->getBaseUrl(),
                 'base_dir' => Container::get('params')->getViewDir(),
                 'brand' => 'НМЗД',
-                'current_url' => Container::get('params')->getProtocol() . Container::get('params')->getBaseUrl() . $_SERVER['REQUEST_URI'],
+                'current_url' => $_SERVER['REQUEST_URI'],
             )
         );
 

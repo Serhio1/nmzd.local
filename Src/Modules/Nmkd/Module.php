@@ -305,6 +305,33 @@ class Module extends BaseModule
                 )
             ),
             
+            //Download Pdf
+            'downloadPdf' => array(
+                'uri' => '/pdf',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Nmkd/Controllers/NmkdController',
+                            'pdf',
+                            $request
+                        );
+                    }
+                )
+            ),
+                        
+            // Documents pdf
+            'nmkdTrainingPlan' => array(
+                'uri' => '/pdf/download',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Nmkd/Controllers/NmkdController',
+                            'downloadPdf',
+                            $request
+                        );
+                    }
+                )
+            ),
         );
     }
 }
