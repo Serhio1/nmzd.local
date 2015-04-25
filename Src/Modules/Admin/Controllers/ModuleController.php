@@ -5,12 +5,13 @@ namespace Src\Modules\Admin\Controllers;
 use Src\Modules\Admin\Forms\ModuleListForm;
 use Src\Modules\Entity\Controllers\EntityController;
 use App\Core\Container;
+use App\Core\Router;
 
 class ModuleController extends EntityController
 {
     protected $entity = 'Main/ModuleModel';
 
-    protected $entityUrl = '/admin/model';
+    protected $entityUrl = '/admin/module';
 
     protected $form = '\\Src\\Modules\\Admin\\Forms\\ModuleForm';
 
@@ -18,9 +19,30 @@ class ModuleController extends EntityController
 
     public function viewAllAction($request)
     {
-        $formConf = array('action' => '');
-        $this->useForm( new \Src\Modules\Admin\Forms\ModuleListForm('view'), $formConf, $request, 'block3');
-
+        Container::get('params')->setThemeData(
+            array(
+                'items' => array(
+                    $this->block => array(
+                        'menus_top_menu' => array(
+                            'view' => '/Src/Views/Themes/Bootstrap/Components/horizontal_pills.html.twig',
+                            'vars' => array(
+                                'list' => array(
+                                    'children' => array(
+                                        array(
+                                            'title' => 'Створити',
+                                            'url' => Router::buildUrl($this->entityUrl . '/create') 
+                                        )
+                                    ),
+                                ),
+                            ),
+                        ),
+                    )
+                )
+            )
+        );
+        
+        $this->useForm( new \Src\Modules\Admin\Forms\ModuleListForm('view'), array('action' => ''), $request, 'block3');
+        
         return $this->render();
     }
     

@@ -73,7 +73,6 @@ class ModuleListForm extends BaseForm
                 $modulesConf[$mName] = true;
             }
             file_put_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json', json_encode($modulesConf));
-            Container::get('router')->redirect('/admin');
         }
         if ($this->operation == 'create') {
             if ($request->request->has('name')) {
@@ -116,7 +115,12 @@ class ModuleListForm extends BaseForm
             $modulesConf = json_decode($modulesConfJson, true);
             unset($modulesConf[strtolower($request->query->get('key'))]);
             file_put_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json', json_encode($modulesConf));
+            $module = 'Src\\Modules\\' . ucfirst($request->query->get('key')) . '\\Module';
+            $module = new $module;
+            $module->uninstall();
         }
+        
+        Container::get('router')->redirect('/admin/module');
     }
 
 
