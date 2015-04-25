@@ -7,6 +7,7 @@ use \PFBC\Element;
 use Symfony\Component\HttpFoundation\Request;
 use App\Core\Container;
 use Src\Modules\Admin\Models\ModuleModel;
+use App\Core\FileProcessor;
 
 class ModuleListForm extends BaseForm
 {
@@ -48,7 +49,7 @@ class ModuleListForm extends BaseForm
             $form->addElement(new Element\Textbox('Назва', 'name'));
         }
         if ($this->operation == 'delete') {
-            
+            $form->addElement(new Element\HTML('<legend>Видалити модуль? Файли модуля будуть знищені.</legend>'));
         }
         
         $this->addControls($form, $request);
@@ -108,6 +109,13 @@ class ModuleListForm extends BaseForm
                 $modulesConf[strtolower($name)] = true;
                 file_put_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json', json_encode($modulesConf));
             }
+        }
+        if ($this->operation == 'delete') {
+            FileProcessor::recursiveDelete('Src/Modules/' . ucfirst($request->query->get('key')));
+            $modulesConfJson = file_get_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json');
+            $modulesConf = json_decode($modulesConfJson, true);
+            unset($modulesConf[strtolower($request->query->get('key'))]);
+            file_put_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json', json_encode($modulesConf));
         }
     }
 

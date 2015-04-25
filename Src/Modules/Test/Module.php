@@ -56,7 +56,7 @@ class Module extends BaseModule
     public function getRoutes()
     {
         return array(
-            'Main' => array(
+            'TestMain' => array(
                 'uri' => '',
                 'settings' => array(
                     '_controller' => function (Request $request) {
