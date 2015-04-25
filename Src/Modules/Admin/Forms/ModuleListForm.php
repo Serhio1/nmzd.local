@@ -3,14 +3,10 @@
 namespace Src\Modules\Admin\Forms;
 
 use App\Core\BaseForm;
-use App\Core\IForm;
-use \PFBC\Form;
 use \PFBC\Element;
-use \PFBC\View;
 use Symfony\Component\HttpFoundation\Request;
-use Src\Modules\Admin\Models\AdminModel;
 use App\Core\Container;
-use App\Core\Router;
+use Src\Modules\Admin\Models\ModuleModel;
 
 class ModuleListForm extends BaseForm
 {
@@ -22,33 +18,40 @@ class ModuleListForm extends BaseForm
 
     protected function formProcess($form, $request, $config)
     {
-        $modulesConfJson = file_get_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json');
-        $modulesConf = json_decode($modulesConfJson);
+        if ($this->operation == 'view') {
+            $modulesConfJson = file_get_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json');
+            $modulesConf = json_decode($modulesConfJson);
 
-        $form->configure($config);
+            $form->configure($config);
 
-        $form->addElement(new Element\HTML('<legend>Список модулів</legend>'));
-        $form->addElement(new Element\Hidden($this->formName, $this->formName));
+            $form->addElement(new Element\HTML('<legend>Список модулів</legend>'));
+            $form->addElement(new Element\Hidden($this->formName, $this->formName));
 
-        $options = array();
-        $hidden = array();
-        $enabledModules = array();
-        
-        foreach ($modulesConf as $name => $state) {
-            $options[$name] = $name;
-            if ($state) {
-                $enabledModules[$name] = $name;
+            $options = array();
+            $hidden = array();
+            $enabledModules = array();
+
+            foreach ($modulesConf as $name => $state) {
+                $options[$name] = $name;
+                if ($state) {
+                    $enabledModules[$name] = $name;
+                }
             }
+
+            $form->addElement(new Element\Checkbox("Modules", "modules", $options, array(
+                "value" => $enabledModules,
+                "class" => $hidden
+            )));
+        }
+        if ($this->operation == 'create') {
+            $form->addElement(new Element\HTML('<legend>Створити модуль</legend>'));
+            $form->addElement(new Element\Textbox('Назва', 'name'));
+        }
+        if ($this->operation == 'delete') {
+            
         }
         
-        $form->addElement(new Element\Checkbox("Modules", "Modules", $options, array(
-            "value" => $enabledModules,
-            "class" => $hidden
-        )));
-        $form->addElement(new Element\Button("Зберегти"));
-        $form->addElement(new Element\Button("Відмінити", "button", array(
-            "onclick" => "history.go(-1);"
-        )));
+        $this->addControls($form, $request);
 
         return $form;
     }
@@ -60,15 +63,52 @@ class ModuleListForm extends BaseForm
 
     public function submit(Request $request)
     {
-        $requestedModules = $request->request->get('Modules');
-        $modulesConfJson = file_get_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json');
-        $modulesConf = json_decode($modulesConfJson, true);
-        $modulesConf = array_fill_keys(array_keys($modulesConf), false);
-        foreach ($requestedModules as $key => $mName) {
-            $modulesConf[$mName] = true;
+        if ($this->operation == 'view') {
+            $requestedModules = $request->request->get('modules');
+            $modulesConfJson = file_get_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json');
+            $modulesConf = json_decode($modulesConfJson, true);
+            $modulesConf = array_fill_keys(array_keys($modulesConf), false);
+            foreach ($requestedModules as $key => $mName) {
+                $modulesConf[$mName] = true;
+            }
+            file_put_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json', json_encode($modulesConf));
+            Container::get('router')->redirect('/admin');
         }
-        file_put_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json', json_encode($modulesConf));
-        Container::get('router')->redirect('/admin');
+        if ($this->operation == 'create') {
+            if ($request->request->has('name')) {
+                $name = ucfirst($request->request->get('name'));
+                
+                $model = new ModuleModel();
+                if (!is_dir('Src/Modules/' . $name)) {
+                    mkdir('Src/Modules/' . $name, 0775);
+                }
+                if (!is_dir('Src/Modules/' . $name . '/Controllers')) {
+                    mkdir('Src/Modules/' . $name . '/Controllers', 0775);
+                }
+                if (!is_dir('Src/Modules/' . $name . '/Models')) {
+                    mkdir('Src/Modules/' . $name . '/Models', 0775);
+                }
+                if (!is_dir('Src/Modules/' . $name . '/Forms')) {
+                    mkdir('Src/Modules/' . $name . '/Forms', 0775);
+                }
+                if (!is_dir('Src/Modules/' . $name . '/Views')) {
+                    mkdir('Src/Modules/' . $name . '/Views', 0775);
+                }
+                if (!file_exists('Src/Modules/' . $name . '/Controllers/MainController.php')) {
+                    file_put_contents('Src/Modules/' . $name . '/Controllers/MainController.php', $model->getStdControllerContent($name));
+                    chmod('Src/Modules/' . $name . '/Controllers/MainController.php', 0664);
+                }
+                if (!file_exists('Src/Modules/' . $name . '/Module.php')) {
+                    file_put_contents('Src/Modules/' . $name . '/Module.php', $model->getStdModuleContent($name));
+                    chmod('Src/Modules/' . $name . '/Module.php', 0664);
+                }
+
+                $modulesConfJson = file_get_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json');
+                $modulesConf = json_decode($modulesConfJson, true);
+                $modulesConf[strtolower($name)] = true;
+                file_put_contents(Container::get('params')->getConfigDir() . '/' . 'modules.json', json_encode($modulesConf));
+            }
+        }
     }
 
 

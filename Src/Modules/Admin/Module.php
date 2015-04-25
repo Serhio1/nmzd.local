@@ -77,12 +77,12 @@ class Module extends BaseModule
 
             // Module entity
             'viewAllModules' => array(
-                'uri' => '/modules',
+                'uri' => '/module',
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(
-                            'Src/Modules/Admin/Controllers/MainController',
-                            'modules',
+                            'Src/Modules/Admin/Controllers/ModuleController',
+                            'viewAll',
                             $request,
                             true
                         );

@@ -21,20 +21,6 @@ class MainController extends Controller
     {
         return $this->render();
     }
-    /**
-     * Callback for /admin/modules uri.
-     *
-     * @param $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Exception
-     */
-    public function modulesAction($request)
-    {
-        $formConf = array('action' => '');
-        $this->useForm( new \Src\Modules\Admin\Forms\ModuleListForm('update'), $formConf, $request, 'block3');
-
-        return $this->render();
-    }
     
     public function jMenuAction($request)
     {

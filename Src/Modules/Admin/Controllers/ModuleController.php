@@ -18,8 +18,22 @@ class ModuleController extends EntityController
 
     public function viewAllAction($request)
     {
-        $formConf = array('action' => $this->entityUrl);
-        $this->useForm(new ModuleListForm('update'), $formConf, $request, $this->block);
+        $formConf = array('action' => '');
+        $this->useForm( new \Src\Modules\Admin\Forms\ModuleListForm('view'), $formConf, $request, 'block3');
+
+        return $this->render();
+    }
+    
+    public function createAction($request) {
+        $formConf = array('action' => '');
+        $this->useForm( new \Src\Modules\Admin\Forms\ModuleListForm('create'), $formConf, $request, 'block3');
+
+        return $this->render();
+    }
+    
+    public function deleteAction($request) {
+        $formConf = array('action' => '');
+        $this->useForm( new \Src\Modules\Admin\Forms\ModuleListForm('delete'), $formConf, $request, 'block3');
 
         return $this->render();
     }
