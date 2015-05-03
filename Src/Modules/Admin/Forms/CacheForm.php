@@ -70,7 +70,7 @@ class CacheForm extends BaseForm
         return true;
     }
 
-    public function submit(Request $request)
+    public function submit(Request $request, $form)
     {
         $enableCache = $request->request->get('enable_cache');
         $cacheConfJson = file_get_contents(Container::get('params')->getConfigDir() . '/' . 'cache.json');

@@ -10,6 +10,7 @@ use \Twig_Loader_Filesystem;
 use \Twig_Environment;
 use App\Patches\Nmzd_Twig_Environment;
 use Twig_Loader_String;
+use Twig_SimpleFunction;
 
 class Services
 {
@@ -56,8 +57,20 @@ class Services
 
         Container::register('twigStr',function(){
             $loader = new Twig_Loader_String();
+            $twig = new Twig_Environment($loader);
+            
+            $function = new Twig_SimpleFunction("form_text", function ($name, $id, $value = "", $class = "form_text") {
+                require_once 'Src/Modules/Ajax/Libs/PhpLiveX/PHPLiveX.php';
+                $ajax = new \PHPLiveX();
+                require_once 'Src/Modules/Ajax/Controllers/MainController.php';
+                $myClass = new \Src\Modules\Ajax\Controllers\MainController();
+                $ajax->AjaxifyObjectMethods(array('myClass' => array('validateEmail')));
+                $ajax->Run();
+                echo '<input type="text" name="'.$name.'" id="'.$id.'" value="'.$value.'" class="'.$class.'">';
+            });
+            $twig->addFunction($function);
 
-            return new Twig_Environment($loader);
+            return $twig;
         });
 
         Container::register('theme_settings',function(){

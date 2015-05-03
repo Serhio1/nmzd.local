@@ -27,7 +27,7 @@ class NmkdController extends Controller
     
     public function editAction(Request $request)
     {
-        $formConf = array('action' => '/nmkd/nmkd/edit');
+        $formConf = array('action' => $this->entityUrl);
         $form = $this->useForm(new $this->form('update'), $formConf, $request, $this->block);
 
         if ($request->isXmlHttpRequest()) {

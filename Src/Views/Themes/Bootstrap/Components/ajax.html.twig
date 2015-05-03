@@ -1,0 +1,27 @@
+<div class="ajax">
+    <ul class="testMenu">
+        <li><a class="event" href="">Test Ajax1</a></li>
+        <li><a class="event" href="">Test Ajax2</a></li>
+    </ul>
+
+
+<div class="ajecontainer"></div>
+
+
+
+<script type="text/javascript">
+    jQuery(function(){
+        
+        var script = "$('.ajecontainer').aje().setData({'msg':'ololo','block':\"{{current_block}}\",'component':\"{{current_component}}\"}).setMenu('.testMenu')";
+        //eval(script);
+        //$('.ajecontainer').aje().setScript(script);
+        $('.ajecontainer').aje().setData({'msg':'ololo','block':"{{current_block}}",'component':"{{current_component}}",'script':script}).setMenu('.testMenu');
+        
+    });
+    /*jQuery('.ajax').on('click', '.event', function(e){
+        var block = $(e.target).closest('.ajax');
+        $('.ajecontainer', block).aje();
+    });*/
+    
+</script>
+</div>

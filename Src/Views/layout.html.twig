@@ -5,25 +5,25 @@
 
         {% block block1 %}
             {% for item in items.block1 %}
-                {% include item.view with item.vars|merge(global_vars) only %}
+                {% include item.view with item.vars|merge(global_vars)|merge({'current_block':'block1'}) only %}
             {% endfor %}
         {% endblock %}
 
         {% block block2 %}
-            {% for item in items.block2 %}
-                {% include item.view with item.vars|merge(global_vars) only %}
+            {% for component_key, item in items.block2 %}
+                {% include item.view with item.vars|merge(global_vars)|merge({'current_block':'block2', 'current_component':component_key}) only %}
             {% endfor %}
         {% endblock %}
 
         {% block block3 %}
             {% for item in items.block3 %}
-                {% include item.view with item.vars|merge(global_vars) only %}
+                {% include item.view with item.vars|merge(global_vars)|merge({'current_block':'block3'}) only %}
             {% endfor %}
         {% endblock %}
 
         {% block block4 %}
             {% for item in items.block4 %}
-                {% include item.view with item.vars|merge(global_vars) only %}
+                {% include item.view with item.vars|merge(global_vars)|merge({'current_block':'block4'}) only %}
             {% endfor %}
         {% endblock %}
 

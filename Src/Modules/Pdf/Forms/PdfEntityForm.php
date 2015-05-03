@@ -42,9 +42,9 @@ class PdfEntityForm extends EntityForm
             }
             $tplDefault = array();
             if (isset($values['template_id'])) {
-                $tplDefault[$values['template_id']] = $tplOptions[$values['template_id']];
+                $tplDefault[] = $values['template_id'];
             }
-            $form->addElement(new Element\Select('Шаблон:', 'template_id', $tplOptions, $tplDefault));
+            $form->addElement(new Element\Select('Шаблон:', 'template_id', $tplOptions, array('value' => $tplDefault)));
             
             $configs = Container::get('Pdf/PdfConfigModel')->selectEntity(array(), array('id','title'));
             $confOptions = array();
@@ -53,9 +53,11 @@ class PdfEntityForm extends EntityForm
             }
             $confDefault = array();
             if (isset($values['config_id'])) {
-                $confDefault[$values['config_id']] = $confOptions[$values['config_id']];
+                $confDefault[] = $values['config_id'];
             }
-            $form->addElement(new Element\Select('Конфігурація:', 'config_id', $confOptions));
+            $form->addElement(new Element\Select('Конфігурація:', 'config_id', $confOptions, 
+                    array('value' => $confDefault))
+            );
             
             $this->addControls($form, $request);
         }
@@ -64,7 +66,7 @@ class PdfEntityForm extends EntityForm
     }
     
     
-    public function submit(Request $request)
+    public function submit(Request $request,$form)
     {
         $vars = array();
         $entity = $this->getEntity();

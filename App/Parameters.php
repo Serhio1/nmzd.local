@@ -12,7 +12,7 @@ class Parameters
     public $dbName = 'nmzd';
     public $dbChar = 'utf8';
     
-    public $adminPassword = '21232f297a57a5a743894a0e4a801fc3'; 
+    public $adminPassword = '1f967418ccf92b0ff1c8666df3e5462a'; 
 
     public $cache = false;
 

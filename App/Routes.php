@@ -21,6 +21,14 @@ class Routes
      */
     public static function getAll()
     {
+        $request = Request::createFromGlobals();
+        if ($request->isXmlHttpRequest()) {
+            if ($request->request->has('plxf')) {
+                $plxf = new explode('->', $request->request->has('plxf'));
+                $ctrl = new $plxf[0];
+                return $ctrl->$plxf[1]($request);
+            }
+        }
         $basePath = Container::get('params')->getBasePath();
         $routes = new RouteCollection();
         $modules = static::getModules();

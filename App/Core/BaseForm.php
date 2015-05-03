@@ -53,12 +53,35 @@ class BaseForm
             $config['action'] = '';
         }
         
-        if ($request->request->get('step') == 'finish') { 
-            $config['action'] = $_SESSION[$this->formName]['action'];
-            $this->submit($request);
-            $this->finishEvent();
-        }
         $form = new Form($this->getFormName());
+        
+        
+        
+        
+        if ($request->request->get('step') == 'finish') {
+            $callback = $this->steps[count($this->steps)-1];
+            $config['action'] = $_SESSION[$this->formName]['action'];
+            $processor = $callback . 'Processor';
+            if (method_exists($this, $processor)) {
+                $this->$processor($request);
+            }
+            
+            //$form = $this->$callback($form, $request, $config);
+            //$form = $this->$callback($form, $request, $config);
+            $formRequest = $request->request->get($this->formName);
+            if (Form::isValid($this->formName)) {
+                //if ($form->validate($request, $formInstance)) {
+                    $this->submit($request, $form);
+                    $this->finishEvent();
+                //}
+            } else {
+                $request->request->set('step', count($this->steps)-1);
+            }
+          
+            //$this->submit($request, $form);
+            
+        }
+        
         
         if (empty($this->steps)) {
             throw new \Exception('Form requires at least one step.');
@@ -66,8 +89,29 @@ class BaseForm
         $requestedStep = $request->request->get('step');
         if (empty($requestedStep)) {
             $requestedStep = 0;
+        } else {
+            if (!Form::isValid($this->formName)) {
+                if ($requestedStep >= 1) {
+                    $processor = $this->steps[$requestedStep-1];
+                    $form = $this->$processor($form, $request, $config);
+                    $form->configure($config);
+                    return $form;
+                } elseif ($requestedStep == 0) {
+                    $processor = $this->steps[0];
+                    $form = $this->$processor($form, $request, $config);
+                    $form->configure($config);
+                    return $form;
+                }
+            }
         }
+        
+        
             $requestedStep++;
+            $processor = $requestedStep-2;
+            if ($processor >= 0) {
+                $stepProcessor = $this->steps[$processor] . 'Processor';
+                $this->$stepProcessor($request);
+            }
             if (empty($this->steps[$requestedStep])) {
                 $form->addElement(new Element\Hidden('step', 'finish'));
                 //$config['action'] = $_SESSION[$this->formName]['action'];
@@ -80,6 +124,17 @@ class BaseForm
             $callback = $this->steps[$requestedStep];
             $form = $this->$callback($form, $request, $config);
             $form->configure($config);
+            
+            
+            
+            /*$formRequest = $request->request->get($this->formName);
+            if (!empty($formRequest) && $formRequest == $formName) {
+                if (Form::isValid($this->formName)) {
+                    if ($form->validate($request, $formInstance)) {
+                        $form->submit($request, $formInstance);
+                    }
+                }
+            }*/
 
         return $form;
     }
@@ -87,13 +142,24 @@ class BaseForm
     
     protected function addControls($form, Request $request)
     {
-        $form->addElement(new Element\Button('Відмінити', 'button', array(
-            'onclick' => 'history.go(-1);'
-        )));
-        if ($request->isXmlHttpRequest()) {
-            $form->addElement(new Element\Button('Зберегти','button',array('class'=>'ajax-submit')));
+        if ($this->operation == 'delete') {
+            $form->addElement(new Element\Button('Відмінити', 'button', array(
+                'onclick' => 'history.go(-1);'
+            )));
+            if ($request->isXmlHttpRequest()) {
+                $form->addElement(new Element\Button('Видалити','button',array('class'=>'ajax-submit')));
+            } else {
+                $form->addElement(new Element\Button('Видалити', 'submit'));
+            }
         } else {
-            $form->addElement(new Element\Button('Зберегти', 'submit'));
+            $form->addElement(new Element\Button('Відмінити', 'button', array(
+            'onclick' => 'history.go(-1);'
+            )));
+            if ($request->isXmlHttpRequest()) {
+                $form->addElement(new Element\Button('Зберегти','button',array('class'=>'ajax-submit')));
+            } else {
+                $form->addElement(new Element\Button('Зберегти', 'submit'));
+            }
         }
         
         return $form;
@@ -105,12 +171,12 @@ class BaseForm
      * @param Request $request
      * @return bool
      */
-    public function validate(Request $request)
+    public function validate(Request $request, $form)
     {
         return true;
     }
     
-    public function submit(Request $request){}
+    public function submit(Request $request, $form){}
     
     protected function finishEvent()
     {

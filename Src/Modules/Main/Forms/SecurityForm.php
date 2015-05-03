@@ -8,6 +8,7 @@ use PFBC\Element;
 use Src\Modules\Nmkd\Views\LabCKEditor;
 use App\Core\Container;
 use App\Core\BaseForm;
+use Src\Modules\Main\Forms\Validation\Md5;
 
 class SecurityForm extends BaseForm
 {
@@ -19,29 +20,25 @@ class SecurityForm extends BaseForm
     
     protected function securityFormProcess($form, $request, $config)
     {
-        $form->configure($config);
-        
         if ($this->operation == 'check_password') {
             $form->addElement(new Element\HTML('<legend>Введіть пароль доступу</legend>'));
             $form->addElement(new Element\Password('Пароль:', 'password', array(
                 'required' => 1,
+                "validation" => new Md5("/" . Container::get('params')->adminPassword . "/", "Error: Неправильний пароль."),
+            )));
+            $form->addElement(new Element\Captcha('Капча:', array(
+                'required' => 1,
             )));
         }
-        
-        $form->addElement(new Element\Button('Відмінити', 'button', array(
-            'onclick' => 'history.go(-1);'
-        )));
-        $form->addElement(new Element\Button('Зберегти', 'submit'));
+        $this->addControls($form, $request);
         
         return $form;
     }
     
-    public function submit(Request $request)
+    public function submit(Request $request, $form)
     {
         if ($this->operation == 'check_password') {
-            if (md5($request->request->get('password')) == Container::get('params')->adminPassword) {
-                $_SESSION['security_access'] = true;
-            }
+            $_SESSION['security_access'] = true;
         }
         $this->finishEvent();
     }

@@ -62,7 +62,7 @@ class ModuleListForm extends BaseForm
         return true;
     }
 
-    public function submit(Request $request)
+    public function submit(Request $request, $form)
     {
         if ($this->operation == 'view') {
             $requestedModules = $request->request->get('modules');
@@ -81,18 +81,27 @@ class ModuleListForm extends BaseForm
                 $model = new ModuleModel();
                 if (!is_dir('Src/Modules/' . $name)) {
                     mkdir('Src/Modules/' . $name, 0775);
+                    chmod('Src/Modules/' . $name, 0775);
                 }
                 if (!is_dir('Src/Modules/' . $name . '/Controllers')) {
                     mkdir('Src/Modules/' . $name . '/Controllers', 0775);
+                    chmod('Src/Modules/' . $name . '/Controllers', 0775);
                 }
                 if (!is_dir('Src/Modules/' . $name . '/Models')) {
                     mkdir('Src/Modules/' . $name . '/Models', 0775);
+                    chmod('Src/Modules/' . $name . '/Models', 0775);
+                }
+                if (!is_dir('Src/Modules/' . $name . '/Libs')) {
+                    mkdir('Src/Modules/' . $name . '/Libs', 0775);
+                    chmod('Src/Modules/' . $name . '/Libs', 0775);
                 }
                 if (!is_dir('Src/Modules/' . $name . '/Forms')) {
                     mkdir('Src/Modules/' . $name . '/Forms', 0775);
+                    chmod('Src/Modules/' . $name . '/Forms', 0775);
                 }
                 if (!is_dir('Src/Modules/' . $name . '/Views')) {
                     mkdir('Src/Modules/' . $name . '/Views', 0775);
+                    chmod('Src/Modules/' . $name . '/Views', 0775);
                 }
                 if (!file_exists('Src/Modules/' . $name . '/Controllers/MainController.php')) {
                     file_put_contents('Src/Modules/' . $name . '/Controllers/MainController.php', $model->getStdControllerContent($name));

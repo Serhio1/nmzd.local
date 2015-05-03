@@ -43,7 +43,7 @@ class PdfTemplateForm extends EntityForm
     }
     
     
-    public function submit(Request $request)
+    public function submit(Request $request, $form)
     {
         $vars = array();
         $entity = $this->getEntity();

@@ -54,5 +54,122 @@ class DisciplineController extends EntityController
         
         return $this->render();
     }
+    
+    public function viewAllAction($request)
+    {
+        Container::get('params')->setThemeData('layout', '3-9');
+
+        Container::get('params')->setThemeData(
+            array(
+                'items' => array(
+                    'block2' => array(
+                        'admin_menu' => array(
+                            'view' => '/Src/Views/Themes/Bootstrap/Components/nav_vertical_pills.html.twig',
+                            'vars' => array(
+                                'list' => Container::get('Main/MenuModel')->getMenu('admin_menu'),
+                            )
+                        )
+                    ),
+
+                )
+            )
+        );
+        
+        return parent::viewAllAction($request);
+    }
+    
+    public function viewAction($request)
+    {
+        Container::get('params')->setThemeData('layout', '3-9');
+
+        Container::get('params')->setThemeData(
+            array(
+                'items' => array(
+                    'block2' => array(
+                        'admin_menu' => array(
+                            'view' => '/Src/Views/Themes/Bootstrap/Components/nav_vertical_pills.html.twig',
+                            'vars' => array(
+                                'list' => Container::get('Main/MenuModel')->getMenu('admin_menu'),
+                            )
+                        )
+                    ),
+
+                )
+            )
+        );
+        
+        return parent::viewAction($request);
+    }
+    
+    public function createAction($request)
+    {
+        Container::get('params')->setThemeData('layout', '3-9');
+
+        Container::get('params')->setThemeData(
+            array(
+                'items' => array(
+                    'block2' => array(
+                        'admin_menu' => array(
+                            'view' => '/Src/Views/Themes/Bootstrap/Components/nav_vertical_pills.html.twig',
+                            'vars' => array(
+                                'list' => Container::get('Main/MenuModel')->getMenu('admin_menu'),
+                            )
+                        )
+                    ),
+
+                )
+            )
+        );
+        
+        return parent::createAction($request);
+    }
+    
+    public function editAction($request)
+    {
+        Container::get('params')->setThemeData('layout', '3-9');
+
+        Container::get('params')->setThemeData(
+            array(
+                'items' => array(
+                    'block2' => array(
+                        'admin_menu' => array(
+                            'view' => '/Src/Views/Themes/Bootstrap/Components/nav_vertical_pills.html.twig',
+                            'vars' => array(
+                                'list' => Container::get('Main/MenuModel')->getMenu('admin_menu'),
+                            )
+                        )
+                    ),
+
+                )
+            )
+        );
+        
+        return parent::editAction($request);
+    }
+    
+    public function deleteAction($request)
+    {
+        Container::get('params')->setThemeData('layout', '3-9');
+
+        Container::get('params')->setThemeData(
+            array(
+                'items' => array(
+                    'block2' => array(
+                        'admin_menu' => array(
+                            'view' => '/Src/Views/Themes/Bootstrap/Components/nav_vertical_pills.html.twig',
+                            'vars' => array(
+                                'list' => Container::get('Main/MenuModel')->getMenu('admin_menu'),
+                            )
+                        )
+                    ),
+
+                )
+            )
+        );
+        
+        return parent::deleteAction($request);
+    }
+    
+
 
 }

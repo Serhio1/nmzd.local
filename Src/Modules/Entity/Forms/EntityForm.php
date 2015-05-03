@@ -69,7 +69,7 @@ class EntityForm extends BaseForm
 
     protected function config(){}
 
-    public function submit(Request $request)
+    public function submit(Request $request, $form)
     {
         $vars = array();
         $entity = $this->getEntity();

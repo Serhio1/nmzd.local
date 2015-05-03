@@ -84,7 +84,7 @@ class NmkdForm extends BaseForm
      * 
      * @param type $request
      */
-    protected function inputProcess($request)
+    protected function inputProcessor($request)
     {
         $questionStr = $request->request->get('questions');
         $questionArr = explode('<br />', nl2br($questionStr));
@@ -104,7 +104,7 @@ class NmkdForm extends BaseForm
      */
     public function setHierarchy($form, $request, $config)
     {
-        $this->inputProcess($request);
+        //$this->inputProcess($request);
         
         /*if ($this->operation == 'create') {
             
@@ -159,14 +159,14 @@ class NmkdForm extends BaseForm
      * 
      * @param type $request
      */
-    protected function setHierarchyProcess($request)
+    protected function setHierarchyProcessor($request)
     {
         $_SESSION[$this->formName][$request->query->get('id')]['hierarchy'] = $request->request->get('hierarchy');
     }
     
     public function setTypes($form, $request, $config)
     {
-        $this->setHierarchyProcess($request);
+        //$this->setHierarchyProcess($request);
         
         $disciplineId = $request->query->get('id');
         $existTypes = $this->getEntity()->selectTypes($disciplineId);
@@ -215,18 +215,18 @@ class NmkdForm extends BaseForm
      * 
      * @param type $request
      */
-    protected function setTypesProcess($request)
+    protected function setTypesProcessor($request)
     {
         $types = array();
         if (!empty($request->request->get('types'))) {
             foreach ($request->request->get('types') as $key => $val) {
-                $types[$key] = $val[0];
+                $types[$key] = $val;
             }
         }
         $_SESSION[$this->formName][$request->query->get('id')]['types'] = $types;
     }
     
-    public function submit(Request $request)
+    public function submit(Request $request, $form)
     {
         $vars = array();
         /*if ($this->operation == 'create') {
@@ -255,7 +255,7 @@ class NmkdForm extends BaseForm
         }
         if ($this->operation == 'update') {*/
             $vars['discipline_id'] = $request->query->get('id');
-            $this->setTypesProcess($request);
+            //$this->setTypesProcess($request);
 
             $questions = $_SESSION[$this->formName][$request->query->get('id')]['questions'];
             $typesQuestions = $_SESSION[$this->formName][$request->query->get('id')]['types'];

@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use \PFBC\Form;
 use \PFBC\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class Controller
 {
@@ -16,6 +17,19 @@ abstract class Controller
 
     protected function render($data = array())
     {
+        $request = Request::createFromGlobals();
+        if ($request->isXmlHttpRequest()) {
+            if ($request->request->has('ajaxData')) {
+                $ajaxData = $request->request->get('ajaxData');
+                if (isset($ajaxData['component']) && isset($ajaxData['block'])) {
+                    $themeSettings = Container::get('theme_settings');
+                    $data['current_block'] = $ajaxData['block'];
+                    $data['current_component'] = $ajaxData['component'];
+                    $themeSettings = $themeSettings['items'][$ajaxData['block']][$ajaxData['component']];
+                    return New JsonResponse(array('html'=>Container::get('twig')->render($themeSettings['view'], $data), 'script'=>$ajaxData['script']));
+                }
+            }
+        }
         return $this->renderTwig('/Src/Views/layout.html.twig', $data);
     }
     
@@ -56,6 +70,24 @@ abstract class Controller
     {
         $this->preProcessView();
         $themeSettings = Container::get('theme_settings');
+        $request = Request::createFromGlobals();
+        /*if ($request->isXmlHttpRequest()) {
+            if ($request->request->has('ajaxData')) {
+                $ajaxData = $request->request->get('ajaxData');
+                if (isset($ajaxData['component']) && isset($ajaxData['block'])) {
+                    $themeSettings = $themeSettings['items'][$ajaxData['block']][$ajaxData['component']];
+                    $globalTemplateData = array(
+                        'errors' => $this->errors,
+                    );
+
+                    $globalTemplateData = array_merge_recursive(
+                        $globalTemplateData,
+                        $themeSettings
+                    );
+                    return $globalTemplateData;
+                }
+            }
+        }*/
 
         $globalTemplateData = array(
             'errors' => $this->errors,
@@ -90,14 +122,9 @@ abstract class Controller
     {
         $formName = $form->getFormName();
         $formRequest = $request->request->get($formName);
-        if (!empty($formRequest) && $formRequest == $formName) {
-            if (Form::isValid($formName)) {
-                if ($form->validate($request)) {
-                    $form->submit($request);
-                }
-            }
-        }
         $formInstance = $form->build($request, $config);
+        
+        
         
         if ($request->isXmlHttpRequest()) {
             $form = $formInstance->render(true);

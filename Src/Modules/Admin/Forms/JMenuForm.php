@@ -66,7 +66,7 @@ class JMenuForm extends BaseForm
         return $form;
     }
 
-    public function submit(Request $request)
+    public function submit(Request $request, $form)
     {
         $menuOrder = $request->request->get('menu_order');
         file_put_contents(Container::get('params')->getConfigDir() . '/' . 'menus.json', substr(stripslashes(json_encode($menuOrder, JSON_UNESCAPED_UNICODE)), 1, -1));
