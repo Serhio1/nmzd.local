@@ -65,11 +65,6 @@ class CacheForm extends BaseForm
         return $form;
     }
 
-    public function validate(Request $request)
-    {
-        return true;
-    }
-
     public function submit(Request $request, $form)
     {
         $enableCache = $request->request->get('enable_cache');
