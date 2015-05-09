@@ -59,7 +59,7 @@ class Parameters
         return $this->getBasePath() . '/Cache';
     }
 
-    public function getThemeData()
+    public function getThemeData($keys = array())
     {
         $defaults = array(
             'global_vars' => array(
@@ -69,20 +69,41 @@ class Parameters
                 'current_url' => $_SERVER['REQUEST_URI'],
             )
         );
-
+        
         $themeData = array_merge($defaults, $this->themeData);
 
-        return $themeData;
+        
+        if (empty($keys)) {
+            return $themeData;
+        } else {
+            $data = $this->findThemeData($keys);
+            $data = array_merge($this->themeData, $data);
+            return $data;
+        }
     }
-
+    
     public function setThemeData($key, $value = '')
     {
         if (is_array($key)) {
-            $this->themeData =  array_merge_recursive($this->themeData, $key);
+            $this->themeData = array_merge_recursive($this->themeData, $key);
             return;
         }
 
         $this->themeData[$key] = $value;
+    }
+    
+    private function findThemeData($keys, $data = array())
+    {
+        if (empty($data)) {
+            $data = $this->themeData;
+        }
+        $key = array_shift($keys);
+        $data = $data[$key];
+        if (!empty($keys)) {
+            return $this->findThemeData($keys, $data);
+        }
+        return $data;
+        
     }
 
     public function registerMenu($name, $list = array())

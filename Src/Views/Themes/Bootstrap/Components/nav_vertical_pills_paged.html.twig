@@ -1,11 +1,52 @@
 {# dependencies: Bootstrap 2.3 #}
-<div class="nav-vertical-pills">
-{% if list.title|length %}
-<p class="menu-title">{{list.title}}</p>
-{% endif %}
-<ul {%if id|length%} id="{{id}}"{%endif%} class="nav nav-pills nav-stacked">
-    {% for id, params in list.children %}
-        <li class="{% if params.url == current_url %}active{% endif %}"><a href="{{ params.url }}">{{ params.title }}</a></li>
-    {% endfor %}
-</ul>
-</div>
+
+<form class="form-horizontal" method="post" action="{{current_url}}">
+    <div class="header">
+     <label>Кількість на сторінці: <select name="on_page" onchange="setCount(this);">
+         {% for count in count_on_page %}
+            {% if count == on_page %}
+                <option selected="selected" value="{{count}}">{{count}}</option>
+            {% else %}
+                <option value="{{count}}">{{count}}</option>
+            {% endif %}
+         {% endfor %}
+      </select></label>
+    </div>
+    
+    {% include list_tpl %}
+    
+    {% if count_of_pages > 1 %}
+    <div class="pagination text-center">
+        <ul>
+            {% for i in 1..count_of_pages %}
+                {% if i == page %}
+                <li class="active"><a href="javascript:void(0);" onclick="setPage({{i}}, this);">{{i}}</a></li> 
+                {% else %}
+                <li><a href="javascript:void(0);" onclick="setPage({{i}}, this);">{{i}}</a></li> 
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+     
+    <script type="text/javascript">
+        function currentForm(node) {
+            while (node.nodeName !== "FORM" && node.parentNode) {
+                node = node.parentNode;
+            }
+            return node;
+        }
+        function setPage(page, element) {
+            var hiddenField = document.createElement('input');
+            hiddenField.setAttribute('type', 'hidden');
+            hiddenField.setAttribute('name', 'page');
+            hiddenField.setAttribute('value', page);
+            currentForm(element).appendChild(hiddenField);
+            currentForm(element).submit();
+        }
+        function setCount(element) {
+            currentForm(element).submit();
+        }
+    </script>
+    
+</form>

@@ -32,6 +32,11 @@ class EntityModel extends Model
             return Null;
         }
     }
+    
+    public function getEntityCount()
+    {
+        return $this->getCount($this->table);
+    }
 
     /**
      * Returns parent_id value for field with id = $id.
@@ -90,14 +95,16 @@ class EntityModel extends Model
      * @param type $order - array('columns' => 'DESC') - column of order and type of order
      * @return type
      */
-    public function selectEntity($selectParams, $columns = array(), $order = array('columns' => 'id', 'type' => 'DESC'))
+    public function selectEntity($selectParams, $columns = array(), $order = array('columns' => 'id', 'type' => 'DESC'), $paginate = array('0'))
     {
         //if (!empty($selectParams)) {
         $selection = $this->select(
             $this->table,
             $selectParams,
             $columns,
-            $order
+            $order,
+            false,
+            $paginate
         );
 
         return $selection;

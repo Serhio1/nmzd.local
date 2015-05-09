@@ -89,7 +89,7 @@ class Model
         return $insertQuery->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    protected function select($table, $values, $columns = array(), $order = array(), $distinct = false)
+    protected function select($table, $values, $columns = array(), $order = array(), $distinct = false, $paged)
     {
         if (!empty($columns)) {
             $colStr = implode(', ', $columns);
@@ -103,8 +103,16 @@ class Model
         $query .= ($distinct) ? 'DISTINCT ' : '';
         $query .= "$colStr FROM $table ";
         $query .= (!empty($valsStr)) ? "WHERE $valsStr " : '';
-        $query .= (!empty($order)) ? "ORDER BY $order[columns] $order[type]" : '';
-
+        $query .= (!empty($order)) ? "ORDER BY $order[columns] $order[type] " : '';
+        if (!empty($paged)) {
+            if (!empty($paged[0])) {
+                $query .= "OFFSET $paged[0] ";
+            }
+            if (!empty($paged[1])) {
+                $query .= "LIMIT $paged[1] ";
+            }
+        }
+        
         $selectQuery = self::getDb()->prepare($query);
 
         foreach ($values as $col => $value) {
@@ -164,6 +172,13 @@ class Model
             $deleteQuery->bindValue(':' . $col, $value);
         }
         $deleteQuery->execute();
+    }
+    
+    public function getCount($table)
+    {
+        $query = self::getDb()->prepare("SELECT COUNT(*) FROM $table");
+        $query->execute();
+        return $query->fetchColumn();
     }
 
     private function condition($selectParams)

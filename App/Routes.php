@@ -22,17 +22,28 @@ class Routes
     public static function getAll()
     {
         $request = Request::createFromGlobals();
-        if ($request->isXmlHttpRequest()) {
-            if ($request->request->has('plxf')) {
-                $plxf = new explode('->', $request->request->has('plxf'));
-                $ctrl = new $plxf[0];
-                return $ctrl->$plxf[1]($request);
-            }
-        }
-        $basePath = Container::get('params')->getBasePath();
+        
+        $uri = $request->getRequestUri();
+        $uriArr = explode('/', ltrim($uri, '/'));
         $routes = new RouteCollection();
+        
         $modules = static::getModules();
-
+        foreach ($modules as $name => $state) {
+            if (!$state) {
+                continue;
+            }
+            $path = '/Src/Modules/' . ucfirst($name);
+            if (!file_exists(Container::get('params')->getBasePath() . $path . '/Module.php')) {
+                continue;
+            }
+            
+            $instance = static::pathToNamespace($path . '/Module');
+            $module = new $instance();
+            $module->init();
+            $module->boot();
+        }
+        
+        
         $modulePath = 'Src/Modules/Main/Module';
         $moduleSpace = static::pathToNamespace($modulePath);
         $module = new $moduleSpace;
@@ -47,32 +58,19 @@ class Routes
                 return $controller->$action($request);
             }
         )));
-
-        $objModules = array();
-        foreach ($modules as $name => $state) {
-            if (!$state) {
-                continue;
-            }
-            $path = '/Src/Modules/' . ucfirst($name);
-            if (!file_exists($basePath . $path . '/Module.php')) {
-                continue;
-            }
+        
+         if (!empty($uriArr[0])) {
+            $path = '/Src/Modules/' . ucfirst($uriArr[0]);
             $instance = static::pathToNamespace($path . '/Module');
             $module = new $instance();
-            $objModules[] = $module;
-            $module->init();
             $moduleRoutes = $module->getRoutes();
             if (!empty($moduleRoutes)) {
                 foreach ($moduleRoutes as $id => $params) {
-                    $routes->add(str_replace('-', '_', $name) . '_' . $id, new Route('/' . $name . $params['uri'], $params['settings']));
+                    $routes->add(str_replace('-', '_', ucfirst($uriArr[0])) . '_' . $id, new Route('/' . $uriArr[0] . $params['uri'], $params['settings']));
                 }
             }
         }
-
-        foreach ($objModules as $object) {
-            $object->boot();
-        }
-
+        
         return $routes;
     }
 

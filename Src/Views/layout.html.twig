@@ -17,7 +17,12 @@
 
         {% block block3 %}
             {% for item in items.block3 %}
-                {% include item.view with item.vars|merge(global_vars)|merge({'current_block':'block3'}) only %}
+                {% if item.view is iterable %}
+                    {% include item.view|last with item.vars|merge(global_vars)|merge({'current_block':'block3'}) only %}
+                {% else %}
+                    {% include item.view with item.vars|merge(global_vars)|merge({'current_block':'block3'}) only %}
+                {% endif %}
+                    
             {% endfor %}
         {% endblock %}
 
