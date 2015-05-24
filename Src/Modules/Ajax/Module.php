@@ -57,7 +57,7 @@ class Module extends BaseModule
     {
         return array(
             'AjaxMain' => array(
-                'uri' => '',
+                'uri' => '/index',
                 'settings' => array(
                     '_controller' => function (Request $request) {
                         return $this->setAction(

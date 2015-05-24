@@ -292,6 +292,18 @@ class Module extends BaseModule
                 )
             ),
                         
+            'pdfEditor' => array(
+                'uri' => '/editor',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Pdf/Controllers/PdfEditorController',
+                            'pdfEditor',
+                            $request
+                        );
+                    }
+                )
+            ),
             
         );
     }

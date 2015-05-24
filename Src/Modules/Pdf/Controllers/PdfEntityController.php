@@ -34,7 +34,6 @@ class PdfEntityController extends EntityController
         } else {
             return new Response('Error');
         }
-        
     }
     
     protected function preProcessView()

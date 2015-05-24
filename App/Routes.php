@@ -24,7 +24,7 @@ class Routes
         $request = Request::createFromGlobals();
         
         $uri = $request->getRequestUri();
-        $uriArr = explode('/', ltrim($uri, '/'));
+        $uriArr = explode('/', ltrim(strtok($uri, '?'), '/'));
         $routes = new RouteCollection();
         
         $modules = static::getModules();

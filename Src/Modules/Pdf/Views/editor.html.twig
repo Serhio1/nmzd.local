@@ -1,0 +1,7 @@
+{% extends '/Src/Views/Themes/'~theme~'/index.html.twig' %}
+
+{% block layout %}
+    <div id="content" contenteditable="true">
+        {{pdf | raw}}
+    </div>
+{% endblock %}

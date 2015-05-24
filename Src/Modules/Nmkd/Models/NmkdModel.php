@@ -6,6 +6,7 @@ use App\Core\Model;
 use App\Core\Container;
 use \PDO;
 use Symfony\Component\HttpFoundation\Request;
+use App\Core\Router;
 
 class NmkdModel extends Model
 {
@@ -23,9 +24,24 @@ class NmkdModel extends Model
     public function PdfWorkPlan(Request $request)
     {
         $discipline = Container::get('Nmkd/DisciplineModel')->selectById($request->query->get('id'));
+        $program = $this->select(
+            'themes_questions', 
+            array('id_discipline' => $request->query->get('id'))
+        );
+        $typesSelection = Container::get('Nmkd/TypesModel')->getEntityList();
+        $types = array();
+        foreach ($typesSelection as $type) {
+           $types[$type['key']] = $type['id']; 
+        }
         return array(
             'disc_name' => $discipline['title'],
             'year' => date("Y"),
+            'program' => $program,
+            'types' => $types,
+            'base_url' => Container::get('params')->getBasePath(),
+            'img_emblem' => Router::buildUrl('/Src/Modules/Nmkd/Views/img/emblem.png'),
+            'img_header' => Router::buildUrl('/Src/Modules/Nmkd/Views/img/header.png'),
+            'img_sign' => Router::buildUrl('/Src/Modules/Nmkd/Views/img/sign.png'),
         );
     }
     
@@ -35,6 +51,21 @@ class NmkdModel extends Model
         return array(
             'disc_name' => $discipline['title'],
             'year' => date("Y"),
+        );
+    }
+    
+    public function PdfTest(Request $request)
+    {
+        $discipline = Container::get('Nmkd/DisciplineModel')->selectById($request->query->get('id'));
+        $program = $this->select(
+                'themes_questions', 
+                array('id_discipline' => $request->query->get('id'))
+        );
+        
+        return array(
+            'disc_name' => $discipline['title'],
+            'year' => date("Y"),
+            'program' => $program
         );
     }
     

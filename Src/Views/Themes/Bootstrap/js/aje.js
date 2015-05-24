@@ -11,8 +11,7 @@
                         ajaxData:$.data(target, 'ajeData')
                     },
                     function(response){
-                        target.html(response.html);
-                        eval(response.script);
+                        target.html(response);
                     });
                     
                 return this;

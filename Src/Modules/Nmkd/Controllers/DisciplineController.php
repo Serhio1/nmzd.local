@@ -25,13 +25,14 @@ class DisciplineController extends EntityController
             $disciplineMenu['children'][$key]['url'] .= '?id=' . $request->query->get('id');
         }*/
         
+        
+        
         $jsTop = array(
             'jQuery' => '/Src/Views/Themes/Bootstrap/js/jquery-1.9.1.js',
-            /*'AjE' => '/Src/Views/Themes/Bootstrap/js/ajaxEngine.js',
-            'AjEMenu' => '/Src/Views/Themes/Bootstrap/js/AjEMenu.js',*/
+            'AjE' => '/Src/Views/Themes/Bootstrap/js/aje.js',
         );
         $jsBottom = array(
-            //'ajaxDisciplineMenu' => '/Src/Modules/Nmkd/Views/js/ajaxDisciplineMenu.js',
+            'autosave' => '/Src/Modules/Nmkd/Forms/Js/autosave.js'
         );
         Container::get('params')->setThemeData(array('jsTop' => $jsTop));
         Container::get('params')->setThemeData(array('jsBottom' => $jsBottom));
@@ -127,6 +128,17 @@ class DisciplineController extends EntityController
     public function editAction($request)
     {
         Container::get('params')->setThemeData('layout', '3-9');
+        
+        $jsTop = array(
+            'jQuery' => '/Src/Views/Themes/Bootstrap/js/jquery-1.9.1.js',
+            'AjE' => '/Src/Views/Themes/Bootstrap/js/aje.js',
+        );
+        $jsBottom = array(
+            'autosave' => '/Src/Modules/Nmkd/Forms/Js/autosave.js'
+        );
+        Container::get('params')->setThemeData(array('jsTop' => $jsTop));
+        Container::get('params')->setThemeData(array('jsBottom' => $jsBottom));
+                
 
         Container::get('params')->setThemeData(
             array(

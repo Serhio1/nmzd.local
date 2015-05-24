@@ -27,6 +27,24 @@ class PdfEntityModel extends EntityModel
         return $this->generate(Container::get('twigStr')->render($tpl[0]['body'], $vars), $config[0]);
     }
     
+    public function outPdfRaw($key, $vars)
+    {
+        $entity = $this->selectEntity(array('key'=>$key));
+        $tplModel = Container::get('Pdf/PdfTemplateModel');
+        $tpl = $tplModel->selectEntity(array('id'=>$entity[0]['template_id']));
+        $configModel = Container::get('Pdf/PdfConfigModel');
+        $config = $configModel->selectEntity(array('id'=>$entity[0]['config_id']));
+        return Container::get('twigStr')->render($tpl[0]['body'], $vars);
+    }
+    
+    public function outEditedPdf($tpl, $key, $vars)
+    {
+        $entity = $this->selectEntity(array('key'=>$key));
+        $configModel = Container::get('Pdf/PdfConfigModel');
+        $config = $configModel->selectEntity(array('id'=>$entity[0]['config_id']));
+        return $this->generate(Container::get('twigStr')->render($tpl, $vars), $config[0]);
+    }
+    
     /**
     * Generate the PDF file using the mPDF library.
     *

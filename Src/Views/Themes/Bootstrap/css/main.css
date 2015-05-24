@@ -391,3 +391,15 @@ textarea,
     display: inline;
     margin-right: 1%;
 }
+
+.autosubmit .timeout {
+    width: 50px !important;
+    display: inline-block;
+}
+.autosubmit .autosave-btn {
+    display: inline-block;
+}
+.autosubmit .save-msg {
+    margin-left: 5px;
+    display: inline-block;
+}

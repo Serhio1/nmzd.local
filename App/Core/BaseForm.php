@@ -44,9 +44,10 @@ class BaseForm
         }
         if ($request->isXmlHttpRequest()) {
             $post = array();
-            parse_str($request->request->get('ajaxData'), $post);
+            parse_str($request->request->get('ajaxData')['data'], $post);
             foreach ($post as $key => $val) {
                 $request->request->set($key, $val);
+                $_POST[$key] = $val;
             }
         } else {
             $_SESSION[$this->formName]['action'] = $config['action'];
@@ -56,7 +57,9 @@ class BaseForm
         $form = new Form($this->getFormName());
         
         
-        
+        $callback = $this->steps[count($this->steps)-1];
+       // $config['action'] = $_SESSION[$this->formName]['action'];
+        $processor = $callback . 'Processor';
         
         if ($request->request->get('step') == 'finish') {
             $callback = $this->steps[count($this->steps)-1];
@@ -73,6 +76,7 @@ class BaseForm
                 //if ($form->validate($request, $formInstance)) {
                     $this->submit($request, $form);
                     $this->finishEvent();
+                    return $form;
                 //}
             } else {
                 $request->request->set('step', count($this->steps)-1);
@@ -149,7 +153,7 @@ class BaseForm
             if ($request->isXmlHttpRequest()) {
                 $form->addElement(new Element\Button('Видалити','button',array('class'=>'ajax-submit')));
             } else {
-                $form->addElement(new Element\Button('Видалити', 'submit'));
+                $form->addElement(new Element\Button('Видалити', 'submit', array()));
             }
         } else {
             $form->addElement(new Element\Button('Відмінити', 'button', array(
@@ -161,6 +165,7 @@ class BaseForm
                 $form->addElement(new Element\Button('Зберегти', 'submit'));
             }
         }
+        $form->addElement(new Element\HTML('<script type="text/javascript">$("#'.$this->formName.'").submit(function(e){ setInterval(function(){$(\'input[type=submit]\').prop("disabled", false);}, 10); }); </script>'));
         
         return $form;
     }

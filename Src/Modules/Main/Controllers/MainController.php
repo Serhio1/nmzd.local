@@ -57,21 +57,6 @@ class MainController extends Controller
         
         $this->paginate($request, $countOfPages, array('items','block3','nmkd_menu'), array(1,2,3));
         
-        /*$vars = Container::get('params')->getThemeData(array('items','block3','nmkd_menu'));
-        $vars['view'] = '/Src/Views/Themes/Bootstrap/Components/nav_vertical_pills_paged.html.twig';
-        $vars['vars']['list_tpl'] = '/Src/Views/Themes/Bootstrap/Components/nav_vertical_pills.html.twig';
-        
-        Container::get('params')->setThemeData(array(
-            'items' => array(
-                'block3' => array(
-                    'nmkd_menu' => array(
-                        'view' => $vars['view'],
-                        'vars' => $vars['vars']
-                    )
-                )
-            )
-        ));*/
-        
         return $this->render();
     }
     

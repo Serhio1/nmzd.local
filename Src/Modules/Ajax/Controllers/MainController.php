@@ -13,20 +13,29 @@ use App\Core\Router;
 
 class MainController extends Controller
 {
+    
+    protected $entityUrl = '/nmkd/discipline/menu';
+
+    protected $form = '\\Src\\Modules\\Nmkd\\Forms\\NmkdForm';
+
+    protected $block = 'block3';
 
     public function indexAction($request)
     {
-        require_once 'Src/Modules/Ajax/Libs/PhpLiveX/PHPLiveX.php';
-        $ajax = new \PHPLiveX();
         $jsTop = array(
             'jQuery' => '/Src/Views/Themes/Bootstrap/js/jquery-1.9.1.js',
             'aje' => '/Src/Views/Themes/Bootstrap/js/aje.js',
         );
+        
+        $jsBottom = array(
+            'autosave' => '/Src/Modules/Nmkd/Forms/js/autosave.js',
+        );
+        
+        
         $data = array();
         $data['script'] = new Response("$(`.ajecontainer`).aje().setData({`msg`:`ololo`,`block`:`block2`,`component`:`aje_test`}).setMenu(`.testMenu`);");
         
         $collectedComponent = array(
-            
             'top_menu' => array(
                 'view' => '/Src/Views/Themes/Bootstrap/Components/horizontal_pills.html.twig',
                 'vars' => array(
@@ -49,9 +58,24 @@ class MainController extends Controller
                 )
             ),
         );
+        
+        $formConf = array('action' => $this->entityUrl, 'prevent' => array('bootstrap', 'jQuery'));
+        $form = $this->useForm(new $this->form('update'), $formConf, $request, $this->block);
+
+        if ($request->isXmlHttpRequest()) {
+            //$formConf = array('action' => '/nmkd/nmkd/edit');
+            //$form = $this->useForm(new $this->form('update'), $formConf, $request, $this->block);
+            $twig = Container::get('twig');
+            //$response = $twig->render($form['view'], $form['vars']);  
+            //return new Response($form['vars']['form']);
+            //return new Response($response);
+        }
+        
+        
         //$collectedComponent['rules']['ajemenu'] = array('topMenu'=>'aje_test');
         
         Container::get('params')->setThemeData(array('jsTop' => $jsTop));
+        Container::get('params')->setThemeData(array('jsBottom' => $jsBottom));
         Container::get('params')->setThemeData(
             array(
                 'items' => array(
@@ -61,33 +85,6 @@ class MainController extends Controller
         );
         
         return $this->render($data);
-        //require_once 'Src/Modules/Ajax/Controllers/MainController.php';
-        /*$myClass = new $this;
-        $ajax->AjaxifyObjectMethods(array('myClass' => array('ajaxTest')));*/
-        
-        //return new Response(Container::get('twigStr')->render('test {{ form_text("fname", "fname", "", "chosen") }}'));
-        
-        return new Response(Container::get('twigStr')->render('<html><head><meta charset="utf-8" /><script type="text/javascript" src="http://nmzd.local/Src/Modules/Ajax/Libs/PhpLiveX/phplivex.js"></script></head><body>
-            This is Ajax index action.
-            {{ form_text("fname", "fname", "", "chosen") }}
-<input type="button" value="Validate Email" onclick="validate();">  
-<input type="text" id="email" size="15" maxlength="15">  
-<span id="pr" style="visibility:hidden;"><i>Validating...</i></span>  
-<span id="msg"></span> 
-<script type="text/javascript">  
-function validate(){  
-    val = document.getElementById("email").value;  
-    myClass.validateEmail(val, {  
-        "preloader":"pr",  
-        "onFinish": function(response){  
-            var msg = document.getElementById("msg");  
-            if(response) msg.innerHTML = "Valid Email Address!";  
-            else msg.innerHTML = "Invalid Email Address!";  
-        }  
-    });  
-}  
-</script>
-</body></html>'));
     }
     
     public function testAction()

@@ -89,7 +89,7 @@ class Model
         return $insertQuery->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    protected function select($table, $values, $columns = array(), $order = array(), $distinct = false, $paged)
+    protected function select($table, $values, $columns = array(), $order = array(), $distinct = false, $paged=array())
     {
         if (!empty($columns)) {
             $colStr = implode(', ', $columns);
