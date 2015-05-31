@@ -52,8 +52,9 @@ class Router
         $file = basename($request->server->get('SCRIPT_FILENAME'));
         $urlSlug = str_replace($file, '', str_replace($doc_root, '', $full_path));
         $uri = ltrim($uri, '/');
+        $urlSlug = ltrim($urlSlug, '/');
 
-        return $protocol . '://' . $baseUrl . $urlSlug . $uri . $strParams;
+        return $protocol . '://' . $baseUrl . '/' . $urlSlug . $uri . $strParams;
     }
 
 }
