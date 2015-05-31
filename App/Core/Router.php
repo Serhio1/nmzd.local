@@ -45,7 +45,7 @@ class Router
         }
 
         $request = Request::createFromGlobals();
-        $protocol = $request->server->get('REQUEST_SCHEME');
+        $protocol = $request->isSecure() ? 'https' : 'http';
         $baseUrl = $request->server->get('SERVER_NAME');
         $doc_root = $request->server->get('DOCUMENT_ROOT');
         $full_path = $request->server->get('SCRIPT_FILENAME');

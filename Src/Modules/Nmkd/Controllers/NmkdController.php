@@ -65,6 +65,7 @@ class NmkdController extends Controller
         $jsTop = array(
             'jQuery' => '/Src/Views/Themes/Bootstrap/js/jquery-1.9.1.js',
             'aje' => '/Src/Views/Themes/Bootstrap/js/aje.js',
+            'jquery_ui' => '/vendor/pfbc/pfbc/PFBC/Resources/jquery-ui/js/jquery-ui.min.js'
         );
         
 

@@ -3,14 +3,28 @@
 namespace App;
 
 use App\Core\Container;
+use Symfony\Component\HttpFoundation\Request;
 
 class Parameters
 {
-    public $dbHost = 'localhost';
-    public $dbUser = 'postgres';
-    public $dbPass = 'postgres';
-    public $dbName = 'nmzd';
     public $dbChar = 'utf8';
+    private $hosting = array(
+        'current' => 'local',
+        'env' => array(
+            'local' => array(
+                'host' => 'localhost',
+                'user' => 'postgres',
+                'pass' => 'postgres',
+                'db' => 'nmzd'
+            ),
+            'rhc' => array(
+                'host' => '127.8.104.130',
+                'user' => 'admintgddmbk',
+                'pass' => 'iX9Bus5SgnHR',
+                'db' => 'test' 
+            ),
+        )
+    );
     
     public $adminPassword = '1f967418ccf92b0ff1c8666df3e5462a'; 
 
@@ -37,6 +51,11 @@ class Parameters
         }
 
         return self::$_instance;
+    }
+    
+    public function getDbData($key)
+    {
+        return $this->hosting['env'][$this->hosting['current']][$key];
     }
 
     /**

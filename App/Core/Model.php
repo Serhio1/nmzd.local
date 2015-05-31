@@ -21,16 +21,18 @@ class Model
     private static function initDbConnection()
     {
         try {
-            $db = new PDO('pgsql:host='.Container::get('params')->dbHost
-                    .';dbname='.Container::get('params')->dbName, 
-                    Container::get('params')->dbUser, 
-                    Container::get('params')->dbPass
+            
+            $db = new PDO(
+                    'pgsql:host='.Container::get('params')->getDbData('host')
+                    .';dbname='.Container::get('params')->getDbData('db'), 
+                    Container::get('params')->getDbData('user'), 
+                    Container::get('params')->getDbData('pass')
                 );
                 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 static::$db = $db;
                 
         } catch(PDOException $e) {
-            echo $e->getMessage();
+            echo $e->getMessage('Can\'t connect to database.');
         }
 
         return;

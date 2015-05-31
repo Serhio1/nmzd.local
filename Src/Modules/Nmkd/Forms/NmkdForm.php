@@ -184,7 +184,8 @@ class NmkdForm extends BaseForm
     protected function setTypesProcessor($request)
     {
         $types = array();
-        if (!empty($request->request->get('types'))) {
+        $requestedTypes = $request->request->get('types');
+        if (!empty($requestedTypes)) {
             foreach ($request->request->get('types') as $key => $val) {
                 $types[$key] = $val;
             }
