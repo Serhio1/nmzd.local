@@ -54,7 +54,7 @@ class NmkdForm extends BaseForm
         $form->addElement(new AutoSubmit('Зберігати кожні:', 'autosave', array('form_id'=>$this->formName)));
         
         $form->addElement(new Element\HTML('<legend>Введіть запитання</legend>'));
-        $form->addElement(new Element\Textarea('', 'questions', array(
+        $form->addElement(new Elements\TextareaUpload\TextareaUpload('', 'questions', array(
             'required' => 1,
             'value' => $questionsStr
         )));
@@ -129,6 +129,23 @@ class NmkdForm extends BaseForm
     protected function setHierarchyProcessor($request)
     {
         $_SESSION[$this->formName][$request->query->get('id')]['hierarchy'] = $request->request->get('hierarchy');
+        $hierarchy = $_SESSION[$this->formName][$request->query->get('id')]['hierarchy'];
+        $hierarchyRes = array();
+        foreach ($hierarchy as $key => $pair) {
+            $pairArr = explode('-', $pair);
+            $hierarchyRes[$pairArr[0]] = $pairArr[1];
+        }
+        $questions = $_SESSION[$this->formName][$request->query->get('id')]['questions'];
+        $buffer = array();
+        $qOrder = array_keys($hierarchyRes);
+        foreach ($qOrder as $hkey => $hval) {
+            $buffer[$hkey] = $questions[$hval];
+        }
+        foreach ($questions as $qkey => $qval) {
+            $questions[$qkey] = $buffer[$qkey];
+        }
+        $_SESSION[$this->formName][$request->query->get('id')]['questions'] = $questions;
+        return false;
     }
     
     public function setTypes($form, $request, $config)

@@ -79,7 +79,21 @@ class Module extends BaseModule
                         );
                     }
                 )
-            )
+            ),
+            'file_content' => array(
+                'uri' => '/file-content',
+                'settings' => array(
+                    '_controller' => function (Request $request) {
+                        return $this->setAction(
+                            'Src/Modules/Main/Controllers/MainController',
+                            'fileContent',
+                            $request
+                        );
+                    }
+                )
+            ),
+                        
+                        
         );
     }
 }

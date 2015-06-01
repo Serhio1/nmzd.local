@@ -13,11 +13,9 @@ class MainController extends Controller
 {
     public function indexAction(Request $request)
     {
-        $onPage = $request->request->has('on_page') ? $request->request->get('on_page') : 1;
+        $onPage = $request->request->has('on_page') ? $request->request->get('on_page') : 10;
         $page = $request->request->has('page') ? $request->request->get('page') : 1;
-        
-        $countOfPages = round(Container::get('Nmkd/DisciplineModel')->getEntityCount() / $onPage);
-        
+        $countOfPages = ceil(Container::get('Nmkd/DisciplineModel')->getEntityCount() / $onPage);
         $disciplines = Container::get('Nmkd/DisciplineModel')->selectEntity(
                 array(), 
                 array('id','title'), 
@@ -55,7 +53,7 @@ class MainController extends Controller
             )
         ));
         
-        $this->paginate($request, $countOfPages, array('items','block3','nmkd_menu'), array(1,2,3));
+        $this->paginate($request, $countOfPages, array('items','block3','nmkd_menu'));
         
         return $this->render();
     }
@@ -98,6 +96,17 @@ class MainController extends Controller
 
         
         return $this->render();
+    }
+    
+    public function fileContentAction(Request $request)
+    {
+        if (isset($_FILES['file']) && isset($_FILES['file']['tmp_name'])
+                && $_FILES['file']['tmp_name'] != '') {
+
+            $str = file_get_contents($_FILES['file']['tmp_name']);
+            return new Response($str); 
+        }
+        return new Response('Error');
     }
 
 }
