@@ -13,6 +13,5 @@ class TypesController extends EntityController
     protected $form = '\\Src\\Modules\\Nmkd\\Forms\\TypesForm';
 
     protected $block = 'block3';
-
 }
 

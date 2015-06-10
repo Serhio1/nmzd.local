@@ -5,7 +5,8 @@
         "symfony/http-kernel": "2.5.*",
         "symfony/routing": "2.5.*",
         "symfony/yaml": "dev-master#499f7d7aa96747ad97940089bd7a1fb24ad8182a",
-        "pfbc/pfbc": "3.1"
+        "pfbc/pfbc": "3.1",
+        "symfony/security": "2.7.0"
     },
     "autoload": {
         "psr-4": {

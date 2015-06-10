@@ -28,8 +28,6 @@ class MainController extends Controller
             $disciplines[$key]['parent_id'] = -1;
         }
 
-
-        Container::get('params')->setThemeData('layout', '12');
         Container::get('params')->setThemeData(array(
             'items' => array(
                 'block2' => array(

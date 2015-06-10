@@ -21,6 +21,7 @@ class Module extends BaseModule
     {
 
     }
+    
     /**
      * Defines module services in service container. Fires on every request.
      */

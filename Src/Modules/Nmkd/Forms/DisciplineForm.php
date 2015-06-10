@@ -39,10 +39,12 @@ class DisciplineForm extends EntityForm
                 'value' => empty($values['semester']) ? '' : $values['semester'],
             )));
 
-            $form->addElement(new Element\Textbox('Id напряму:', 'id_speciality',
+            $form->addElement(new Element\Number('Id напряму:', 'id_speciality',
                 array(
                     'value' => empty($values['id_speciality']) ? '' : $values['id_speciality'],
                     'min' => '-1',
+                    'max' => '9999',
+                    'maxlength' => '4',
                 )
             ));
 

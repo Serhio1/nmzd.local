@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Symfony\\Component\\Security\\' => array($vendorDir . '/symfony/security'),
     'Src\\' => array($baseDir . '/Src'),
     'App\\' => array($baseDir . '/App'),
 );

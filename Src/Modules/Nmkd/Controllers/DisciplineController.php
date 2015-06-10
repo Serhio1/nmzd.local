@@ -19,23 +19,8 @@ class DisciplineController extends EntityController
     
     public function menuAction(Request $request)
     {
-        Container::get('params')->setThemeData('layout', '12');
-        $disciplineMenu = Container::get('Main/MenuModel')->getMenu('discipline_menu', array('id'=>$request->query->get('id')));
-        /*foreach ($disciplineMenu['children'] as $key => $value) {
-            $disciplineMenu['children'][$key]['url'] .= '?id=' . $request->query->get('id');
-        }*/
-        
-        
-        
-        $jsTop = array(
-            'jQuery' => '/Src/Views/Themes/Bootstrap/js/jquery-1.9.1.js',
-            'AjE' => '/Src/Views/Themes/Bootstrap/js/aje.js',
-        );
-        $jsBottom = array(
-            'autosave' => '/Src/Modules/Nmkd/Forms/Js/autosave.js'
-        );
-        Container::get('params')->setThemeData(array('jsTop' => $jsTop));
-        Container::get('params')->setThemeData(array('jsBottom' => $jsBottom));
+        $disciplineMenu = Container::get('Main/MenuModel')
+                ->getMenu('discipline_menu', array('id'=>$request->query->get('id')));
                 
         Container::get('params')->setThemeData(
             array(

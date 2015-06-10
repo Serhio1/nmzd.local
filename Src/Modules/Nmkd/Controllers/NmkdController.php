@@ -46,7 +46,6 @@ class NmkdController extends Controller
     
     public function editAction(Request $request)
     {
-        
         $formConf = array('action' => $this->entityUrl, 'prevent' => array('bootstrap', 'jQuery'));
         $form = $this->useForm(new $this->form('update'), $formConf, $request, $this->block);
 
@@ -54,12 +53,7 @@ class NmkdController extends Controller
             if ($request->request->get('ajaxData')['key'] == 'autosave') {
                 return new Response('Збережено.');
             }
-            //$formConf = array('action' => '/nmkd/nmkd/edit');
-            //$form = $this->useForm(new $this->form('update'), $formConf, $request, $this->block);
-            $twig = Container::get('twig');
-            //$response = $twig->render($form['view'], $form['vars']);  
             return new Response($form['vars']['form']);
-            //return new Response($response);
         }
         
         $jsTop = array(
@@ -67,12 +61,9 @@ class NmkdController extends Controller
             'aje' => '/Src/Views/Themes/Bootstrap/js/aje.js',
             'jquery_ui' => '/vendor/pfbc/pfbc/PFBC/Resources/jquery-ui/js/jquery-ui.min.js'
         );
-        
 
         Container::get('params')->setThemeData(array('jsTop' => $jsTop));
-        
-        
-        
+
         return $this->render();
     }
     
