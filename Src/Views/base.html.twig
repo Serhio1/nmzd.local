@@ -9,14 +9,22 @@
             {% include stylesheet %}
         {% endfor %}
     </style>
+    {% for topScript in jsTop %}
+        {% if ('http://' in topScript or 'https://' in topScript) %}
+        <script type="text/javascript" src="{{topScript}}"></script>
+        {% else %}
+        <script type="text/javascript">{% include topScript %}</script>
+        {% endif %}
+    {% endfor %}
 </head>
 <body class="{% block theme %}default{% endblock %}" onload="">
 {% block layout %}{% endblock %}
-    {% for topScript in jsTop %}
-        <script type="text/javascript" src="{{topScript}}"></script>
-    {% endfor %}
     {% for bottomScript in jsBottom %}
+        {% if ('http://' in topScript or 'https://' in bottomScript) %}
         <script type="text/javascript" src="{{bottomScript}}"></script>
+        {% else %}
+        <script type="text/javascript">{% include bottomScript %}</script>
+        {% endif %}
     {% endfor %}
 </body>
 </html>
