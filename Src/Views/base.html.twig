@@ -20,7 +20,7 @@
 <body class="{% block theme %}default{% endblock %}" onload="">
 {% block layout %}{% endblock %}
     {% for bottomScript in jsBottom %}
-        {% if ('http://' in topScript or 'https://' in bottomScript) %}
+        {% if ('http://' in bottomScript or 'https://' in bottomScript) %}
         <script type="text/javascript" src="{{bottomScript}}"></script>
         {% else %}
         <script type="text/javascript">{% include bottomScript %}</script>
